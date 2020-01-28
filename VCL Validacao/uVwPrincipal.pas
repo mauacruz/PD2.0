@@ -8,9 +8,9 @@ uses
 
 type
   TForm1 = class(TForm)
-    btnSeguradora: TBitBtn;
+    btnListaSeguradora: TBitBtn;
     lstListaResultado: TListBox;
-    procedure btnSeguradoraClick(Sender: TObject);
+    procedure btnListaSeguradoraClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -28,10 +28,10 @@ uses
 
 {$R *.dfm}
 
-procedure TForm1.btnSeguradoraClick(Sender: TObject);
+procedure TForm1.btnListaSeguradoraClick(Sender: TObject);
 var
   lSeguradoraCtr: TSeguradoraController;
-  lListaSeguradora: TObjectList<TSeguradora>;
+  lListaSeguradora: TList<TSeguradora>;
   lSeguradora: TSeguradora;
 begin
   lSeguradoraCtr := TSeguradoraController.Create;

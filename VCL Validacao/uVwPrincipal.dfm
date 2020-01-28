@@ -13,14 +13,14 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object btnSeguradora: TBitBtn
-    Left = 32
-    Top = 72
-    Width = 75
-    Height = 25
-    Caption = 'Seguradora'
+  object btnListaSeguradora: TBitBtn
+    Left = 24
+    Top = 48
+    Width = 105
+    Height = 33
+    Caption = 'Listar Seguradoras'
     TabOrder = 0
-    OnClick = btnSeguradoraClick
+    OnClick = btnListaSeguradoraClick
   end
   object lstListaResultado: TListBox
     Left = 208

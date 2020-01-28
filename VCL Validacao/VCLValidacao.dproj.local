@@ -2,23 +2,26 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>2020/01/25 23:12:11.000.832,=D:\Casa\Documents\Projetos\Unit1.pas</Transaction>
-    <Transaction>2020/01/25 23:13:05.000.795,D:\Casa\Documents\Projetos\Unit1.dfm=D:\Projetos\PD2.0\VCL Validacao\uVwPrincipal.dfm</Transaction>
-    <Transaction>2020/01/25 23:13:05.000.795,D:\Casa\Documents\Projetos\Unit1.pas=D:\Projetos\PD2.0\VCL Validacao\uVwPrincipal.pas</Transaction>
-    <Transaction>2020/01/25 23:13:15.000.751,D:\Casa\Documents\Projetos\Project1.dproj=D:\Projetos\PD2.0\VCL Validacao\VCLValidacao.dproj</Transaction>
+    <Transaction>2020/01/25 23:13:05.000.795,D:\Projetos\PD2.0\VCL Validacao\uVwPrincipal.dfm=D:\Casa\Documents\Projetos\Unit1.dfm</Transaction>
+    <Transaction>2020/01/25 23:13:05.000.795,D:\Projetos\PD2.0\VCL Validacao\uVwPrincipal.pas=D:\Casa\Documents\Projetos\Unit1.pas</Transaction>
+    <Transaction>2020/01/25 23:13:15.000.751,D:\Projetos\PD2.0\VCL Validacao\VCLValidacao.dproj=D:\Casa\Documents\Projetos\Project1.dproj</Transaction>
     <Transaction>2020/01/25 23:13:32.000.108,=D:\Projetos\PD2.0\APIServer\Controller\Expedicao.Controller.uExpedicao.pas</Transaction>
     <Transaction>2020/01/25 23:13:39.000.819,=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicao.pas</Transaction>
     <Transaction>2020/01/25 23:14:43.000.359,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/25 23:18:27.000.171,D:\Projetos\PD2.0\VCL Validacao\Unit1.pas=D:\Projetos\PD2.0\APIServer\Model\Expedicao.Models.uSeguradora.pas</Transaction>
-    <Transaction>2020/01/26 17:53:01.699,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 17:54:48.055,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoFactory.pas=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 17:55:02.789,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoController.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicao.pas</Transaction>
-    <Transaction>2020/01/26 17:56:18.410,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 17:58:02.506,D:\Projetos\PD2.0\APIServer\Services\Expedicao.Services.uExpedicaoFactory.pas=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 17:59:40.008,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 18:00:35.803,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uDAOSeguradora.pas=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 18:23:29.787,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraPersistencia.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uDAOSeguradora.pas</Transaction>
-    <Transaction>2020/01/26 18:26:48.997,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 18:28:14.404,D:\Projetos\PD2.0\APIServer\Services\Expedicao.Services.uSeguradoraMock.pas=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
-    <Transaction>2020/01/26 18:34:41.763,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoFactory.pas=</Transaction>
+    <Transaction>2020/01/25 23:18:27.000.171,D:\Projetos\PD2.0\APIServer\Model\Expedicao.Models.uSeguradora.pas=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
+    <Transaction>2020/01/26 17:53:01.000.699,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
+    <Transaction>2020/01/26 17:54:48.000.055,D:\Projetos\PD2.0\VCL Validacao\Unit1.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoFactory.pas</Transaction>
+    <Transaction>2020/01/26 17:55:02.000.789,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicao.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoController.pas</Transaction>
+    <Transaction>2020/01/26 17:56:18.000.410,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
+    <Transaction>2020/01/26 17:58:02.000.506,D:\Projetos\PD2.0\VCL Validacao\Unit1.pas=D:\Projetos\PD2.0\APIServer\Services\Expedicao.Services.uExpedicaoFactory.pas</Transaction>
+    <Transaction>2020/01/26 17:59:40.000.008,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
+    <Transaction>2020/01/26 18:00:35.000.803,D:\Projetos\PD2.0\VCL Validacao\Unit1.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uDAOSeguradora.pas</Transaction>
+    <Transaction>2020/01/26 18:23:29.000.787,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uDAOSeguradora.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraPersistencia.pas</Transaction>
+    <Transaction>2020/01/26 18:26:48.000.997,=D:\Projetos\PD2.0\VCL Validacao\Unit1.pas</Transaction>
+    <Transaction>2020/01/26 18:28:14.000.404,D:\Projetos\PD2.0\VCL Validacao\Unit1.pas=D:\Projetos\PD2.0\APIServer\Services\Expedicao.Services.uSeguradoraMock.pas</Transaction>
+    <Transaction>2020/01/26 18:34:41.000.763,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoFactory.pas=</Transaction>
+    <Transaction>2020/01/27 21:07:30.282,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uSequenciaController.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoController.pas</Transaction>
+    <Transaction>2020/01/27 21:07:52.259,D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraController.pas=D:\Projetos\PD2.0\APIServer\Interfaces\Expedicao.Interfaces.uSequenciaController.pas</Transaction>
+    <Transaction>2020/01/27 21:09:15.901,D:\Projetos\PD2.0\APIServer\Controller\Expedicao.Controller.uSeguradora.pas=D:\Projetos\PD2.0\APIServer\Controller\Expedicao.Controller.uExpedicao.pas</Transaction>
   </Transactions>
 </BorlandProject>

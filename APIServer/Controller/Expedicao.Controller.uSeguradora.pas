@@ -1,14 +1,14 @@
-unit Expedicao.Controller.uExpedicao;
+unit Expedicao.Controller.uSeguradora;
 
 interface
 uses
   Generics.Collections,
-  Expedicao.Interfaces.uExpedicaoController,
+  Expedicao.Interfaces.uSeguradoraController,
   Expedicao.Services.uExpedicaoFactory,
   Expedicao.Models.uSeguradora;
 
 type
-  TExpedicaoController = class(TInterfacedObject, IExpedicaoController)
+  TSeguradoraController = class(TInterfacedObject, ISeguradoraController)
     private
       FExpedicaoFactory: TExpedicaoFactory;
 
@@ -24,19 +24,19 @@ uses
 
 { TExpedicaoController }
 
-constructor TExpedicaoController.Create;
+constructor TSeguradoraController.Create;
 begin
   Inherited;
   FExpedicaoFactory := TExpedicaoFactory.Create;
 end;
 
-destructor TExpedicaoController.Destroy;
+destructor TSeguradoraController.Destroy;
 begin
   FExpedicaoFactory.Free;
   inherited;
 end;
 
-function TExpedicaoController.ObterListaSeguradora: TObjectList<TSeguradora>;
+function TSeguradoraController.ObterListaSeguradora: TObjectList<TSeguradora>;
 var
   lSeguradoraPersistenciaSvc: ISeguradoraPersistencia;
 begin

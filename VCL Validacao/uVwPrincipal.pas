@@ -23,21 +23,21 @@ var
 implementation
 uses
   Generics.Collections,
-  Expedicao.Controller.uExpedicao,
+  Expedicao.Controller.uSeguradora,
   Expedicao.Models.uSeguradora;
 
 {$R *.dfm}
 
 procedure TForm1.btnSeguradoraClick(Sender: TObject);
 var
-  lExpedicaoCtr: TExpedicaoController;
+  lSeguradoraCtr: TSeguradoraController;
   lListaSeguradora: TObjectList<TSeguradora>;
   lSeguradora: TSeguradora;
 begin
-  lExpedicaoCtr := TExpedicaoController.Create;
+  lSeguradoraCtr := TSeguradoraController.Create;
   try
     lstListaResultado.clear;
-    lListaSeguradora := lExpedicaoCtr.ObterListaSeguradora;
+    lListaSeguradora := lSeguradoraCtr.ObterListaSeguradora;
     if not Assigned(lListaSeguradora) then
       Exit;
 
@@ -57,7 +57,7 @@ begin
     end;
 
   finally
-    lExpedicaoCtr.Free;
+    lSeguradoraCtr.Free;
   end;
 
 

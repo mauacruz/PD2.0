@@ -102,8 +102,8 @@
             <Form>Form1</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uExpedicao.pas"/>
-        <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uExpedicaoController.pas"/>
+        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uSeguradora.pas"/>
+        <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraController.pas"/>
         <DCCReference Include="..\APIServer\Model\Expedicao.Models.uSeguradora.pas"/>
         <DCCReference Include="..\APIServer\Services\Expedicao.Services.uExpedicaoFactory.pas"/>
         <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraPersistencia.pas"/>

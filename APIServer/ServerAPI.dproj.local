@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <Transactions>
-    <Transaction>2020/01/24 21:31:51.157,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
-    <Transaction>2020/01/24 21:36:06.160,=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.pas</Transaction>
-    <Transaction>2020/01/24 21:40:49.344,=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.pas</Transaction>
-    <Transaction>2020/01/24 21:42:59.031,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\base64.js</Transaction>
-    <Transaction>2020/01/24 21:42:59.518,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\serverfunctionexecutor.js</Transaction>
-    <Transaction>2020/01/24 21:43:04.416,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\json2.js</Transaction>
-    <Transaction>2020/01/24 21:43:04.587,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\callbackframework.js</Transaction>
-    <Transaction>2020/01/24 21:43:04.826,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\base64-min.js</Transaction>
-    <Transaction>2020/01/24 21:43:04.978,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\json2-min.js</Transaction>
-    <Transaction>2020/01/24 21:43:05.148,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\serverfunctionexecutor-min.js</Transaction>
-    <Transaction>2020/01/24 21:43:05.663,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\callbackframework-min.js</Transaction>
-    <Transaction>2020/01/24 23:30:45.201,C:\Users\mau\Documents\projetos\PD2.0\Server\uVwConsole.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.dfm</Transaction>
-    <Transaction>2020/01/24 23:30:45.201,C:\Users\mau\Documents\projetos\PD2.0\Server\uVwConsole.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
-    <Transaction>2020/01/24 23:31:00.838,C:\Users\mau\Documents\projetos\PD2.0\Server\uServerContainer.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.pas</Transaction>
-    <Transaction>2020/01/24 23:31:00.838,C:\Users\mau\Documents\projetos\PD2.0\Server\uServerContainer.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.dfm</Transaction>
-    <Transaction>2020/01/24 23:31:34.332,C:\Users\mau\Documents\projetos\PD2.0\Server\uServerMethods.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.dfm</Transaction>
-    <Transaction>2020/01/24 23:31:34.332,C:\Users\mau\Documents\projetos\PD2.0\Server\uServerMethods.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.pas</Transaction>
-    <Transaction>2020/01/24 23:32:19.743,C:\Users\mau\Documents\projetos\PD2.0\Server\ServerAPI.dproj=C:\Users\mau\Documents\projetos\PD2.0\Server\Server.dproj</Transaction>
-    <Transaction>2020/01/24 23:57:42.575,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
-    <Transaction>2020/01/25 00:04:04.200,C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
-    <Transaction>2020/01/25 00:06:48.416,C:\Users\mau\Documents\projetos\PD2.0\Server\Interfaces\Expedicao.Interfaces.uExpedicao.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas</Transaction>
-    <Transaction>2020/01/25 00:09:38.336,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
-    <Transaction>2020/01/25 00:12:29.772,C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
+	<Transactions>
+    <Transaction>2020/01/24 21:31:51.000.157,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
+    <Transaction>2020/01/24 21:36:06.000.160,=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.pas</Transaction>
+    <Transaction>2020/01/24 21:40:49.000.344,=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.pas</Transaction>
+    <Transaction>2020/01/24 21:42:59.000.518,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\serverfunctionexecutor.js</Transaction>
+    <Transaction>2020/01/24 21:42:59.000.031,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\base64.js</Transaction>
+    <Transaction>2020/01/24 21:43:04.000.978,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\json2-min.js</Transaction>
+    <Transaction>2020/01/24 21:43:04.000.826,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\base64-min.js</Transaction>
+    <Transaction>2020/01/24 21:43:04.000.587,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\callbackframework.js</Transaction>
+    <Transaction>2020/01/24 21:43:04.000.416,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\json2.js</Transaction>
+    <Transaction>2020/01/24 21:43:05.000.148,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\serverfunctionexecutor-min.js</Transaction>
+    <Transaction>2020/01/24 21:43:05.000.663,=C:\Users\mau\Documents\projetos\PD2.0\Server\js\callbackframework-min.js</Transaction>
+    <Transaction>2020/01/24 23:30:45.000.201,C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\uVwConsole.dfm</Transaction>
+    <Transaction>2020/01/24 23:30:45.000.201,C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\uVwConsole.pas</Transaction>
+    <Transaction>2020/01/24 23:31:00.000.838,C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\uServerContainer.dfm</Transaction>
+    <Transaction>2020/01/24 23:31:00.000.838,C:\Users\mau\Documents\projetos\PD2.0\Server\ServerContainerUnit1.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\uServerContainer.pas</Transaction>
+    <Transaction>2020/01/24 23:31:34.000.332,C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\uServerMethods.pas</Transaction>
+    <Transaction>2020/01/24 23:31:34.000.332,C:\Users\mau\Documents\projetos\PD2.0\Server\ServerMethodsUnit1.dfm=C:\Users\mau\Documents\projetos\PD2.0\Server\uServerMethods.dfm</Transaction>
+    <Transaction>2020/01/24 23:32:19.000.743,C:\Users\mau\Documents\projetos\PD2.0\Server\Server.dproj=C:\Users\mau\Documents\projetos\PD2.0\Server\ServerAPI.dproj</Transaction>
+    <Transaction>2020/01/24 23:57:42.000.575,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
+    <Transaction>2020/01/25 00:04:04.000.200,C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas</Transaction>
+    <Transaction>2020/01/25 00:06:48.000.416,C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Interfaces\Expedicao.Interfaces.uExpedicao.pas</Transaction>
+    <Transaction>2020/01/25 00:09:38.000.336,=C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas</Transaction>
+    <Transaction>2020/01/25 00:12:29.000.772,C:\Users\mau\Documents\projetos\PD2.0\Server\Unit1.pas=C:\Users\mau\Documents\projetos\PD2.0\Server\Controller\Expedicao.Controller.uExpedicao.pas</Transaction>
   </Transactions>
 </BorlandProject>

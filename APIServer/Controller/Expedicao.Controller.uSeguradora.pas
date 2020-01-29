@@ -1,45 +1,61 @@
 unit Expedicao.Controller.uSeguradora;
 
 interface
+
 uses
-  Generics.Collections,
-  Expedicao.Interfaces.uSeguradoraController,
-   Expedicao.Interfaces.uSeguradoraPersistencia,
-  Expedicao.Services.uExpedicaoFactory,
-  Expedicao.Models.uSeguradora;
+  System.SysUtils, System.Classes, Datasnap.DSServer, 
+  Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
+  Expedicao.Interfaces.uSeguradoraPersistencia, System.JSON;
 
 type
-  TSeguradoraController = class(TInterfacedObject, ISeguradoraController)
-    private
-      FExpedicaoFactory: TExpedicaoFactory;
-      FSeguradoraPersistencia: ISeguradoraPersistencia;
-
-    public
-      constructor Create;
-      destructor Destroy; override;
-      function ObterListaSeguradora: TList<TSeguradora>;
+  TSeguradoraController = class(TDSServerModule)
+  private
+    { Private declarations }
+    FSeguradoraPersistencia: ISeguradoraPersistencia;
+  public
+    { Public declarations }
+    function getSeguradoras: TJSONValue;
+    function getSeguradora(ID: TJSONNumber): TJSONValue;
+    function updateSeguradora(Seguradoras: TJSONValue): TJSONValue;
+    function insertSeguradora(Seguradoras: TJSONValue): TJSONValue;
+    function deleteSeguradora(Seguradoras: TJSONValue): TJSONValue;
   end;
 
 implementation
 
-{ TExpedicaoController }
+{%CLASSGROUP 'Vcl.Controls.TControl'}
 
-constructor TSeguradoraController.Create;
+{$R *.dfm}
+
+{ TSeguradoraController }
+
+function TSeguradoraController.deleteSeguradora(
+  Seguradoras: TJSONValue): TJSONValue;
 begin
-  Inherited;
-  FExpedicaoFactory := TExpedicaoFactory.Create;
-  FSeguradoraPersistencia := FExpedicaoFactory.ObterSeguradoraPersistencia(tpMock);;
+
 end;
 
-destructor TSeguradoraController.Destroy;
+function TSeguradoraController.getSeguradora(ID: TJSONNumber): TJSONValue;
 begin
-  FExpedicaoFactory.Free;
-  inherited;
+
 end;
 
-function TSeguradoraController.ObterListaSeguradora: TList<TSeguradora>;
+function TSeguradoraController.getSeguradoras: TJSONValue;
 begin
-  Result := FSeguradoraPersistencia.ObterListaSeguradora;
+
+end;
+
+function TSeguradoraController.insertSeguradora(
+  Seguradoras: TJSONValue): TJSONValue;
+begin
+
+end;
+
+function TSeguradoraController.updateSeguradora(
+  Seguradoras: TJSONValue): TJSONValue;
+begin
+
 end;
 
 end.
+

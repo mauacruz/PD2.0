@@ -36,7 +36,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ServerMethodsUnit1;
+  uServerMethods;
 
 procedure TServerContainer1.DataModuleCreate(Sender: TObject);
 begin

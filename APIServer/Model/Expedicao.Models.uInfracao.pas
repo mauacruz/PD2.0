@@ -5,24 +5,25 @@ interface
 type
   TInfracao = class
     private
-    FTipoInfracao: string;
-    FValor: Currency;
-    FHora: string;
-    FAutorInfracao: Integer;
-    FVeiculoOID: Integer;
-    FAutoInfracao: string;
-    FOrgao: string;
-    FInfracaoOID: Integer;
-    FData: TDateTime;
-    procedure SetAutoInfracao(const Value: string);
-    procedure SetAutorInfracao(const Value: Integer);
-    procedure SetData(const Value: TDateTime);
-    procedure SetHora(const Value: string);
-    procedure SetInfracaoOID(const Value: Integer);
-    procedure SetOrgao(const Value: string);
-    procedure SetTipoInfracao(const Value: string);
-    procedure SetValor(const Value: Currency);
-    procedure SetVeiculoOID(const Value: Integer);
+      FTipoInfracao: string;
+      FValor: Currency;
+      FHora: string;
+      FAutorInfracao: Integer;
+      FVeiculoOID: Integer;
+      FAutoInfracao: string;
+      FOrgao: string;
+      FInfracaoOID: Integer;
+      FData: TDateTime;
+
+      procedure SetAutoInfracao(const Value: string);
+      procedure SetAutorInfracao(const Value: Integer);
+      procedure SetData(const Value: TDateTime);
+      procedure SetHora(const Value: string);
+      procedure SetInfracaoOID(const Value: Integer);
+      procedure SetOrgao(const Value: string);
+      procedure SetTipoInfracao(const Value: string);
+      procedure SetValor(const Value: Currency);
+      procedure SetVeiculoOID(const Value: Integer);
     public
       property InfracaoOID: Integer read FInfracaoOID write SetInfracaoOID;
       property VeiculoOID: Integer read FVeiculoOID write SetVeiculoOID;

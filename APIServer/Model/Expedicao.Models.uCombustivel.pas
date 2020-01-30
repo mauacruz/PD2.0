@@ -4,14 +4,14 @@ interface
 type
   TCombustivel = class
     private
-    FValor: Currency;
-    FDescricao: string;
-    FCombustivelOID: Integer;
-    FUnidadeDeMedidaOID: Integer;
-    procedure SetCombustivelOID(const Value: Integer);
-    procedure SetDescricao(const Value: string);
-    procedure SetUnidadeDeMedidaOID(const Value: Integer);
-    procedure SetValor(const Value: Currency);
+      FValor: Currency;
+      FDescricao: string;
+      FCombustivelOID: Integer;
+      FUnidadeDeMedidaOID: Integer;
+      procedure SetCombustivelOID(const Value: Integer);
+      procedure SetDescricao(const Value: string);
+      procedure SetUnidadeDeMedidaOID(const Value: Integer);
+      procedure SetValor(const Value: Currency);
     public
       property CombustivelOID: Integer read FCombustivelOID write SetCombustivelOID;
       property Descricao: string read FDescricao write SetDescricao;

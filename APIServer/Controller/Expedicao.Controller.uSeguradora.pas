@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Classes, Datasnap.DSServer, 
   Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  Expedicao.Interfaces.uSeguradoraPersistencia, System.JSON;
+  System.JSON,
+  Expedicao.Interfaces.uSeguradoraPersistencia;
 
 type
   TSeguradoraController = class(TDSServerModule)

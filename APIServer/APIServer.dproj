@@ -144,6 +144,16 @@
         <DCCReference Include="Model\Expedicao.Models.uRomaneio.pas"/>
         <DCCReference Include="Model\Expedicao.Models.uVeiculo.pas"/>
         <DCCReference Include="Model\Expedicao.Models.uSeguro.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uExpedicaoFactory.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uSeguradoraMock.pas"/>
+        <DCCReference Include="Interfaces\Expedicao.Interfaces.uCombustivelPersistencia.pas"/>
+        <DCCReference Include="Interfaces\Expedicao.Interfaces.uInfracaoPersistencia.pas"/>
+        <DCCReference Include="Interfaces\Expedicao.Interfaces.uRomaneioPersistencia.pas"/>
+        <DCCReference Include="Interfaces\Expedicao.Interfaces.uVeiculoPersistencia.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uInfracaoMock.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uCombustivelMock.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uRomaneioMock.pas"/>
+        <DCCReference Include="Services\Expedicao.Services.uVeiculoMock.pas"/>
         <None Include="js\base64.js"/>
         <None Include="js\serverfunctionexecutor.js"/>
         <None Include="js\json2.js"/>
@@ -174,7 +184,7 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="js\json2-min.js" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="js\serverfunctionexecutor.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -183,6 +193,12 @@
                 <DeployFile LocalName="js\serverfunctionexecutor-min.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Debug\APIServer.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>APIServer.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -198,13 +214,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\APIServer.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="js\callbackframework.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
-                        <RemoteName>APIServer.exe</RemoteName>
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="js\callbackframework.js" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="js\json2-min.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -217,12 +233,6 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="js\base64.js" Configuration="Debug" Class="ProjectFile">
-                    <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="js\serverfunctionexecutor.js" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>

@@ -18,7 +18,17 @@ uses
   Expedicao.Controller.uVeiculo in 'Controller\Expedicao.Controller.uVeiculo.pas' {VeiculoController: TDSServerModule},
   Expedicao.Models.uRomaneio in 'Model\Expedicao.Models.uRomaneio.pas',
   Expedicao.Models.uVeiculo in 'Model\Expedicao.Models.uVeiculo.pas',
-  Expedicao.Models.uSeguro in 'Model\Expedicao.Models.uSeguro.pas';
+  Expedicao.Models.uSeguro in 'Model\Expedicao.Models.uSeguro.pas',
+  Expedicao.Services.uExpedicaoFactory in 'Services\Expedicao.Services.uExpedicaoFactory.pas',
+  Expedicao.Services.uSeguradoraMock in 'Services\Expedicao.Services.uSeguradoraMock.pas',
+  Expedicao.Interfaces.uCombustivelPersistencia in 'Interfaces\Expedicao.Interfaces.uCombustivelPersistencia.pas',
+  Expedicao.Interfaces.uInfracaoPersistencia in 'Interfaces\Expedicao.Interfaces.uInfracaoPersistencia.pas',
+  Expedicao.Interfaces.uRomaneioPersistencia in 'Interfaces\Expedicao.Interfaces.uRomaneioPersistencia.pas',
+  Expedicao.Interfaces.uVeiculoPersistencia in 'Interfaces\Expedicao.Interfaces.uVeiculoPersistencia.pas',
+  Expedicao.Services.uInfracaoMock in 'Services\Expedicao.Services.uInfracaoMock.pas',
+  Expedicao.Services.uCombustivelMock in 'Services\Expedicao.Services.uCombustivelMock.pas',
+  Expedicao.Services.uRomaneioMock in 'Services\Expedicao.Services.uRomaneioMock.pas',
+  Expedicao.Services.uVeiculoMock in 'Services\Expedicao.Services.uVeiculoMock.pas';
 
 {$R *.res}
 

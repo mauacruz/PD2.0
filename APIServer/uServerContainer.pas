@@ -49,12 +49,11 @@ var
 
 implementation
 uses
+  uServerMethods,
   Expedicao.Services.uExpedicaoFactory;
 
 {$R *.dfm}
 
-uses
-  uServerMethods;
 
 procedure TServerContainer1.DataModuleCreate(Sender: TObject);
 var

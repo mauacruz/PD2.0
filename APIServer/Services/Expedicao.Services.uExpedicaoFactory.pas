@@ -12,6 +12,7 @@ type
 
 
     function ObterSeguradoraPersistencia(pTipoPersistencia: TTipoPersistencia): ISeguradoraPersistencia;
+
   end;
 
 implementation

@@ -1,8 +1,8 @@
 object ServerContainer1: TServerContainer1
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 271
-  Width = 415
+  Height = 347
+  Width = 574
   object DSServer1: TDSServer
     Left = 96
     Top = 11
@@ -20,24 +20,24 @@ object ServerContainer1: TServerContainer1
     Left = 96
     Top = 135
   end
-  object DSServerClass1: TDSServerClass
-    OnGetClass = DSServerClass1GetClass
+  object dsscCombustivel: TDSServerClass
+    OnGetClass = dsscCombustivelGetClass
     Server = DSServer1
-    Left = 200
+    Left = 280
     Top = 11
   end
   object DSServerMetaDataProvider1: TDSServerMetaDataProvider
     Server = DSServer1
-    Left = 272
-    Top = 88
+    Left = 88
+    Top = 216
   end
   object DSProxyGenerator1: TDSProxyGenerator
     MetaDataProvider = DSServerMetaDataProvider1
     TargetUnitName = 'ServerFunctions.js'
     TargetDirectory = 'js'
     Writer = 'Java Script REST'
-    Left = 256
-    Top = 168
+    Left = 200
+    Top = 208
   end
   object DSHTTPServiceFileDispatcher1: TDSHTTPServiceFileDispatcher
     Service = DSHTTPService1
@@ -73,5 +73,29 @@ object ServerContainer1: TServerContainer1
       end>
     Left = 312
     Top = 216
+  end
+  object dsscInfracao: TDSServerClass
+    OnGetClass = dsscInfracaoGetClass
+    Server = DSServer1
+    Left = 272
+    Top = 80
+  end
+  object dsscRomaneio: TDSServerClass
+    OnGetClass = dsscRomaneioGetClass
+    Server = DSServer1
+    Left = 384
+    Top = 8
+  end
+  object dsscSeguradora: TDSServerClass
+    OnGetClass = dsscSeguradoraGetClass
+    Server = DSServer1
+    Left = 392
+    Top = 80
+  end
+  object dsscVeiculo: TDSServerClass
+    OnGetClass = dsscVeiculoGetClass
+    Server = DSServer1
+    Left = 488
+    Top = 72
   end
 end

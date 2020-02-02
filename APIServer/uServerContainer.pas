@@ -63,7 +63,8 @@ begin
   DSProxyGenerator1.Write;
 
   //Injeta as classes de persistência nos Controllers
-  lFactory := TExpedicaoFactory.Create;
+//  lFactory := TExpedicaoFactory.Create;
+
 
 
 end;

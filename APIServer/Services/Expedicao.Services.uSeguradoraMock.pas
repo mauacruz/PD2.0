@@ -72,6 +72,8 @@ begin
       lSeguradora.Descricao := pSeguradora.Descricao;
       lSeguradora.CNPJ := pSeguradora.CNPJ;
       lSeguradora.Telefone := pSeguradora.Telefone;
+      lSeguradora.Corretor := pSeguradora.Corretor;
+      Result := True;
       Exit;
     end;
 
@@ -87,6 +89,7 @@ begin
     if lSeguradora.SeguradoraOID = pSeguradoraOID then
     begin
       FListaSeguradora.Remove(lSeguradora);
+      Result := True;
       Exit;
     end;
 
@@ -95,7 +98,9 @@ end;
 function TSeguradoraMock.IncluirSeguradora(pSeguradora: TSeguradora): Boolean;
 begin
 
+  pSeguradora.SeguradoraOID := FListaSeguradora.Count + 1;
   FListaSeguradora.Add(pSeguradora);
+
   Result := True;
 end;
 

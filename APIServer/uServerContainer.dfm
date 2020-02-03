@@ -15,6 +15,7 @@ object ServerContainer1: TServerContainer1
   end
   object DSHTTPService1: TDSHTTPService
     HttpPort = 8080
+    OnFormatResult = DSHTTPService1FormatResult
     Server = DSServer1
     Filters = <>
     Left = 96

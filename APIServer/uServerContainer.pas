@@ -13,7 +13,7 @@ uses System.SysUtils, System.Classes,
   Expedicao.Controller.uInfracao,
   Expedicao.Controller.uRomaneio,
   Expedicao.Controller.uSeguradora,
-  Expedicao.Controller.uVeiculo;
+  Expedicao.Controller.uVeiculo, System.JSON, Data.DBXCommon;
 
 type
   TServerContainer1 = class(TDataModule)
@@ -39,6 +39,9 @@ type
       var PersistentClass: TPersistentClass);
     procedure dsscVeiculoGetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
+    procedure DSHTTPService1FormatResult(Sender: TObject;
+      var ResultVal: TJSONValue; const Command: TDBXCommand;
+      var Handled: Boolean);
   private
     { Private declarations }
   public
@@ -67,6 +70,20 @@ begin
 
 
 
+end;
+
+procedure TServerContainer1.DSHTTPService1FormatResult(Sender: TObject;
+  var ResultVal: TJSONValue; const Command: TDBXCommand; var Handled: Boolean);
+var
+  ValueJSONPuro: TJSONValue;
+begin
+  ValueJSONPuro := ResultVal;
+  try
+    ResultVal := TJSONArray(ValueJSONPuro).Remove(0);
+  finally
+    ValueJSONPuro.Free;
+  end;
+  Handled := True;
 end;
 
 procedure TServerContainer1.dsscCombustivelGetClass(

@@ -5,23 +5,33 @@ interface
 uses
   System.SysUtils, System.Classes, Datasnap.DSServer, 
   Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  System.JSON;
+  System.JSON,
+  Expedicao.Interfaces.uInfracaoPersistencia;
 
 type
   TInfracaoController = class(TDSServerModule)
   private
     { Private declarations }
+     FInfracaoPersistencia: IInfracaoPersistencia;
   public
     { Public declarations }
 
-    function getInfracoes: TJSONValue;
-    function getInfracao(ID: TJSONNumber): TJSONValue;
-    function updateInfracao(Infracoes: TJSONValue): TJSONValue;
-    function insertInfracao(Infracoes: TJSONValue): TJSONValue;
-    function deleteInfracao(Infracoes: TJSONValue): TJSONValue;
+    procedure SetInfracaoPersistencia(pInfracaoPersistencia: IInfracaoPersistencia);
+
+    function Infracoes: TJSONValue;
+    function Infracao(ID: Integer): TJSONValue;
+    function updateInfracao(Infracao: TJSONObject): TJSONValue;
+    function acceptInfracao(Infracao: TJSONObject): TJSONValue;
+    function cancelInfracao(ID: Integer): TJSONValue;
   end;
 
 implementation
+
+uses
+  REST.jSON,
+  System.Generics.Collections,
+  Expedicao.Services.uExpedicaoFactory,
+  Expedicao.Models.uInfracao;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -29,31 +39,100 @@ implementation
 
 { TInfracaoController }
 
-function TInfracaoController.deleteInfracao(
-  Infracoes: TJSONValue): TJSONValue;
+function TInfracaoController.cancelInfracao(
+  ID: Integer): TJSONValue;
+var
+  lListaInfracao: TList<TInfracao>;
 begin
+
+  if FInfracaoPersistencia.ExcluirInfracao(ID) then
+  begin
+    lListaInfracao := FInfracaoPersistencia.ObterListaInfracao;
+    try
+      Result := TJSONString.Create('Total de Infrações cadastradas: ' +
+        lListaInfracao.Count.ToString);
+
+    finally
+      lListaInfracao.Free;
+    end;
+  end
+  else
+    Result := TJSONString.Create('Infração não encontrada!');
 
 end;
 
-function TInfracaoController.getInfracao(ID: TJSONNumber): TJSONValue;
+function TInfracaoController.Infracao(ID: Integer): TJSONValue;
+var
+  lInfracao: TInfracao;
+  lArrResult: TJSONArray;
+  lJSonObj: TJSONObject;
 begin
+  lArrResult := TJSONArray.Create;
+  lInfracao := FInfracaoPersistencia.ObterInfracao(ID);
+
+  if Assigned(lInfracao) then
+    Result := TJson.ObjectToJsonObject(lInfracao)
+  else
+    Result := TJSONString.Create('Infração não encontrada!');
 
 end;
 
-function TInfracaoController.getInfracoes: TJSONValue;
+function TInfracaoController.Infracoes: TJSONValue;
+var
+  lListaInfracao: TList<TInfracao>;
+  lInfracao: TInfracao;
+  lArrResult: TJSONArray;
+  lJSonObj: TJSONObject;
 begin
+  lArrResult := TJSONArray.Create;
+  lListaInfracao := FInfracaoPersistencia.ObterListaInfracao;
+
+  try
+    for lInfracao in lListaInfracao do
+    begin
+      lJSonObj := TJSon.ObjectToJSonObject(lInfracao);
+      lArrResult.AddElement(lJSonObj);
+
+    end;
+    Result := lArrResult;
+  finally
+    lListaInfracao.Free;
+  end;
 
 end;
 
-function TInfracaoController.insertInfracao(
-  Infracoes: TJSONValue): TJSONValue;
+procedure TInfracaoController.SetInfracaoPersistencia(
+  pInfracaoPersistencia: IInfracaoPersistencia);
 begin
+  FInfracaoPersistencia := pInfracaoPersistencia;
+end;
+
+function TInfracaoController.acceptInfracao(
+  Infracao: TJSONObject): TJSONValue;
+var
+  lInfracao: TInfracao;
+begin
+  lInfracao := TJson.JsonToObject<TInfracao>(Infracao);
+  if FInfracaoPersistencia.IncluirInfracao(lInfracao) then
+    Result := TJson.ObjectToJsonObject(
+      FInfracaoPersistencia.ObterInfracao(lInfracao.InfracaoOID))
+
+  else
+    Result := TJSONString.Create('Erro ao incluir a infração!')
 
 end;
 
 function TInfracaoController.updateInfracao(
-  Infracoes: TJSONValue): TJSONValue;
+  Infracao: TJSONObject): TJSONValue;
+var
+  lInfracao: TInfracao;
 begin
+  lInfracao := TJson.JsonToObject<TInfracao>(Infracao);
+  if FInfracaoPersistencia.AlterarInfracao(lInfracao) then
+    Result := TJson.ObjectToJsonObject(
+      FInfracaoPersistencia.ObterInfracao(lInfracao.InfracaoOID))
+  else
+    Result := TJSONString.Create('Erro ao alterar a infração!')
 
 end;
 

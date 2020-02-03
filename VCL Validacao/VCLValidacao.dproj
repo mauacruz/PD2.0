@@ -105,10 +105,7 @@
         <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uSeguradora.pas"/>
         <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraController.pas"/>
         <DCCReference Include="..\APIServer\Model\Expedicao.Models.uSeguradora.pas"/>
-        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uExpedicaoFactory.pas"/>
         <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uSeguradoraPersistencia.pas"/>
-        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uSeguradoraMock.pas"/>
-        <DCCReference Include="..\APIServer\Model\Expedicao.Models.uInfracao.pas"/>
         <DCCReference Include="..\APIServer\Model\Expedicao.Models.uCombustivel.pas"/>
         <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uCombustivelPersistencia.pas"/>
         <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uCombustivelController.pas"/>
@@ -117,6 +114,32 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uCombustivel.pas">
+            <Form>CombustivelController</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uInfracao.pas">
+            <Form>InfracaoController</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uRomaneio.pas">
+            <Form>RomaneioController</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\APIServer\Controller\Expedicao.Controller.uVeiculo.pas">
+            <Form>VeiculoController</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uCombustivelMock.pas"/>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uExpedicaoFactory.pas"/>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uInfracaoMock.pas"/>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uRomaneioMock.pas"/>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uSeguradoraMock.pas"/>
+        <DCCReference Include="..\APIServer\Services\Expedicao.Services.uVeiculoMock.pas"/>
+        <DCCReference Include="..\APIServer\Model\Expedicao.Models.uInfracao.pas"/>
+        <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uInfracaoPersistencia.pas"/>
+        <DCCReference Include="..\APIServer\Interfaces\Expedicao.Interfaces.uRomaneioPersistencia.pas"/>
+        <DCCReference Include="..\APIServer\Model\Expedicao.Models.uRomaneio.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

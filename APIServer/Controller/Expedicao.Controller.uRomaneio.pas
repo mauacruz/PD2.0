@@ -10,6 +10,7 @@ uses
 
 type
   TRomaneioController = class(TDSServerModule)
+    procedure DSServerModuleCreate(Sender: TObject);
   private
     { Private declarations }
     FRomaneioPersistencia: IRomaneioPersistencia;
@@ -38,7 +39,7 @@ uses
 
 { TRomaneioController }
 
-function TRomaneioController.cancelRomaneio(Romaneio: TJSONObject): TJSONValue;
+function TRomaneioController.cancelRomaneio(ID: Integer): TJSONValue;
 var
   lListaRomaneio: TList<TRomaneio>;
 begin
@@ -57,6 +58,20 @@ begin
   else
     Result := TJSONString.Create('Romaneio não encontrado!');
 
+end;
+
+procedure TRomaneioController.DSServerModuleCreate(Sender: TObject);
+var
+  lFActory: TExpedicaoFactory;
+
+begin
+  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
+  lFActory := TExpedicaoFactory.Create;
+  try
+    FRomaneioPersistencia := lFActory.ObterRomaneioPersistencia(tpMock);
+  finally
+    lFActory.Free;
+  end;
 end;
 
 function TRomaneioController.Romaneio(ID: Integer): TJSONValue;

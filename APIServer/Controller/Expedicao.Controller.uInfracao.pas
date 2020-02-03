@@ -10,6 +10,7 @@ uses
 
 type
   TInfracaoController = class(TDSServerModule)
+    procedure DSServerModuleCreate(Sender: TObject);
   private
     { Private declarations }
      FInfracaoPersistencia: IInfracaoPersistencia;
@@ -59,6 +60,19 @@ begin
   else
     Result := TJSONString.Create('Infração não encontrada!');
 
+end;
+
+procedure TInfracaoController.DSServerModuleCreate(Sender: TObject);
+var
+  lFActory: TExpedicaoFactory;
+begin
+  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
+  lFActory := TExpedicaoFactory.Create;
+  try
+    FInfracaoPersistencia := lFActory.ObterInfracaoPersistencia(tpMock);
+  finally
+    lFActory.Free;
+  end;
 end;
 
 function TInfracaoController.Infracao(ID: Integer): TJSONValue;

@@ -9,6 +9,7 @@ uses
 
 type
   TCombustivelController = class(TDSServerModule)
+    procedure DSServerModuleCreate(Sender: TObject);
   private
     { Private declarations }
     FCombustivelPersistencia: ICombustivelPersistencia;
@@ -19,8 +20,8 @@ type
 
     function Combustiveis: TJSONValue;
     function Combustivel(ID: Integer): TJSONValue;
-    function updateCombustiveis(Combustivel: TJSONValue): TJSONValue;
-    function acceptCombustiveis(Combustivel: TJSONValue): TJSONValue;
+    function updateCombustiveis(Combustivel: TJSONObject): TJSONValue;
+    function acceptCombustiveis(Combustivel: TJSONObject): TJSONValue;
     function cancelCombustiveis(ID: Integer): TJSONValue;
   end;
 
@@ -94,10 +95,23 @@ begin
   lCombustivel := FCombustivelPersistencia.ObterCombustivel(ID);
 
   if Assigned(lCombustivel) then
-    Result := TJson.ObjectToJsonObject(lSeguradora)
+    Result := TJson.ObjectToJsonObject(lCombustivel)
   else
     Result := TJSONString.Create('Combustível não encontrado!');
 
+end;
+
+procedure TCombustivelController.DSServerModuleCreate(Sender: TObject);
+var
+  lFActory: TExpedicaoFactory;
+begin
+  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
+  lFActory := TExpedicaoFactory.Create;
+  try
+    FCombustivelPersistencia := lFActory.ObterCombustivelPersistencia(tpMock);
+  finally
+    lFActory.Free;
+  end;
 end;
 
 procedure TCombustivelController.setCombustivelPersistencia(
@@ -107,7 +121,7 @@ begin
 end;
 
 function TCombustivelController.acceptCombustiveis(
-  Combustivel: TJSONValue): TJSONValue;
+  Combustivel: TJSONObject): TJSONValue;
 var
   lCombustivel: TCombustivel;
 begin
@@ -122,7 +136,7 @@ begin
 end;
 
 function TCombustivelController.updateCombustiveis(
-  Combustivel: TJSONValue): TJSONValue;
+  Combustivel: TJSONObject): TJSONValue;
 var
   lCombustivel: TCombustivel;
 begin

@@ -38,8 +38,8 @@ begin
   lRomaneio.RomaneioOID := 1;
   lRomaneio.VeiculoOID := 1;
   lRomaneio.CondutorOID := 1;
-  lRomaneio.Saida := DateToStr('15/01/2020');
-  lRomaneio.Retorno := DateToStr('15/01/2020');
+  lRomaneio.Saida := StrToDate('15/01/2020');
+  lRomaneio.Retorno := StrToDate('15/01/2020');
   lRomaneio.KMSaida := 70200;
   lRomaneio.KMRetorno := 70400;
   lRomaneio.KMRodado := 200;
@@ -51,8 +51,8 @@ begin
   lRomaneio.RomaneioOID := 2;
   lRomaneio.VeiculoOID := 2;
   lRomaneio.CondutorOID := 2;
-  lRomaneio.Saida := DateToStr('20/02/2020');
-  lRomaneio.Retorno := DateToStr('20/02/2020');
+  lRomaneio.Saida := StrToDate('20/02/2020');
+  lRomaneio.Retorno := StrToDate('20/02/2020');
   lRomaneio.KMSaida := 150480;
   lRomaneio.KMRetorno := 150540;
   lRomaneio.KMRodado := 60;
@@ -140,7 +140,7 @@ begin
     if lRomaneio.RomaneioOID = pRomaneioOID then
     begin
       Result := lRomaneio;
-      lRomaneio;
+      Exit;
     end;
 
 end;

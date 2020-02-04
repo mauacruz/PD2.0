@@ -1,4 +1,5 @@
 Vamos por uma linha
 Primeira.
-Segunda linha.
+outra.
+Segunda.
 Terceira linha.

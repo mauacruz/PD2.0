@@ -28,7 +28,8 @@ uses
   Expedicao.Services.uInfracaoMock in 'Services\Expedicao.Services.uInfracaoMock.pas',
   Expedicao.Services.uCombustivelMock in 'Services\Expedicao.Services.uCombustivelMock.pas',
   Expedicao.Services.uRomaneioMock in 'Services\Expedicao.Services.uRomaneioMock.pas',
-  Expedicao.Services.uVeiculoMock in 'Services\Expedicao.Services.uVeiculoMock.pas';
+  Expedicao.Services.uVeiculoMock in 'Services\Expedicao.Services.uVeiculoMock.pas',
+  uDataModule in 'uDataModule.pas' {DataModule1: TDataModule};
 
 {$R *.res}
 
@@ -37,6 +38,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TServerContainer1, ServerContainer1);
+  Application.CreateForm(TDataModule1, DataModule1);
   Application.Run;
 end.
 

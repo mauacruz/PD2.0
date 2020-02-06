@@ -51,8 +51,8 @@ implementation
 
 constructor TVeiculo.Create;
 begin
-  FListaCombustivel := TObjectList<TCombustivel>.Create;
-  FListaSeguro := TObjectList<TSeguro>.Create;
+  FListaCombustivel := TObjectList<TCombustivel>.Create(True);
+  FListaSeguro := TObjectList<TSeguro>.Create(True);
 
 end;
 

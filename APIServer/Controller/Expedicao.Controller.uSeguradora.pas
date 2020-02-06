@@ -5,32 +5,44 @@ interface
 uses
   System.SysUtils, System.Classes, Datasnap.DSServer,
   Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  Expedicao.Interfaces.uSeguradoraPersistencia, System.JSON;
+  System.JSON, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  Expedicao.Models.uSeguradora;
 
 type
   TSeguradoraController = class(TDSServerModule)
-    procedure DSServerModuleCreate(Sender: TObject);
+    tblSeguradora: TFDQuery;
+    tblSeguradoraSEGURADORAOID: TIntegerField;
+    tblSeguradoraDESCRICAO: TStringField;
+    tblSeguradoraCNPJ: TStringField;
+    tblSeguradoraTELEFONE: TStringField;
+    tblSeguradoraCORRETOR: TStringField;
+    tblSeguradoraSEGUROOID: TIntegerField;
+
   private
     { Private declarations }
-    FSeguradoraPersistencia: ISeguradoraPersistencia;
+    function ObterSeguradoraSelecionada: TSeguradora;
+    function GravarSeguradora(pSeguradora: TSeguradora): Boolean;
+    function PesquisarSeguradora(pSeguradoraOID: Integer): Boolean;
   public
     { Public declarations }
 
-    procedure SetSeguradoraPersistencia(pSeguradoraPersistencia: ISeguradoraPersistencia);
+//    procedure SetSeguradoraPersistencia(pSeguradoraPersistencia: ISeguradoraPersistencia);
 
     function Seguradoras: TJSONValue;
     function Seguradora(ID: Integer): TJSONValue;
-    function updateSeguradoras(Seguradora: TJSONObject): TJSONValue;
-    function acceptSeguradoras(Seguradora: TJSONObject): TJSONValue;
-    function cancelSeguradoras(ID: Integer): TJSONValue;
+    function updateSeguradora(Seguradora: TJSONObject): TJSONValue;
+    function acceptSeguradora(Seguradora: TJSONObject): TJSONValue;
+    function cancelSeguradora(ID: Integer): TJSONValue;
   end;
 
 implementation
 uses
   REST.jSON,
-  System.Generics.Collections,
-  Expedicao.Services.uExpedicaoFactory,
-  Expedicao.Models.uSeguradora;
+  uDataModule;
+
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -38,111 +50,156 @@ uses
 
 { TSeguradoraController }
 
-function TSeguradoraController.cancelSeguradoras(
+function TSeguradoraController.cancelSeguradora(
   ID: Integer): TJSONValue;
-var
-  lListaSeguradora: TList<TSeguradora>;
 begin
 
-  if FSeguradoraPersistencia.ExcluirSeguradora(ID) then
+  with tblSeguradora do
   begin
-    lListaSeguradora := FSeguradoraPersistencia.ObterListaSeguradora;
-    try
-      Result := TJSONString.Create('Total de Seguradoras cadastradas: ' +
-        lListaSeguradora.Count.ToString);
+    Open;
 
-    finally
-      lListaSeguradora.Free;
-    end;
-  end
-  else
-    Result := TJSONString.Create('Seguradora não encontrada!');
+    if Locate('SEGURADORAOID', ID, []) then
+    begin
+      Delete;
+      Result := TJSONString.Create('Seguradora excluída com sucesso!');
+    end
+    else
+      Result := TJSONString.Create('Erro ao excluir a seguradora!');
+
+    Close;
+  end;
 
 end;
 
-procedure TSeguradoraController.DSServerModuleCreate(Sender: TObject);
-var
-  lFActory: TExpedicaoFactory;
+function TSeguradoraController.GravarSeguradora(
+  pSeguradora: TSeguradora): Boolean;
 begin
-  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
-  lFActory := TExpedicaoFactory.Create;
-  try
-    FSeguradoraPersistencia := lFActory.ObterSeguradoraPersistencia(tpMock);
-  finally
-    lFActory.Free;
+  Result := False;
+
+  tblSeguradora.Open;
+  if pSeguradora.SeguradoraOID <= 0 then
+    tblSeguradora.Append
+  else
+  begin
+    if not PesquisarSeguradora(pSeguradora.SeguradoraOID) then
+     Exit
+    else
+     tblSeguradora.Edit;
   end;
+
+  tblSeguradoraDESCRICAO.AsString := pSeguradora.Descricao;
+  tblSeguradoraCNPJ.AsString := pSeguradora.CNPJ;
+  tblSeguradoraTELEFONE.AsString := pSeguradora.Telefone;
+  tblSeguradoraCORRETOR.AsString := pSeguradora.Corretor;
+
+  tblSeguradora.post;
+  tblSeguradora.Close;
+  Result := true;
+
+end;
+
+function TSeguradoraController.ObterSeguradoraSelecionada: TSeguradora;
+begin
+  Result := TSeguradora.Create;
+  REsult.SeguradoraOID := tblSeguradoraSEGURADORAOID.AsInteger;
+  Result.Descricao  := tblSeguradoraDESCRICAO.AsString;
+  Result.CNPJ := tblSeguradoraCNPJ.AsString;
+  Result.Telefone := tblSeguradoraTELEFONE.AsString;
+  Result.Corretor := tblSeguradoraCORRETOR.AsString;
+end;
+
+function TSeguradoraController.PesquisarSeguradora(
+  pSeguradoraOID: Integer): Boolean;
+begin
+  Result := False;
+
+  with tblSeguradora do
+  begin
+    if IsEmpty then
+      Exit;
+
+    Result := (Locate('SEGURADORAOID', pSeguradoraOID, []))
+  end;
+
 end;
 
 function TSeguradoraController.Seguradora(ID: Integer): TJSONValue;
 var
   lSeguradora: TSeguradora;
-  lArrResult: TJSONArray;
-  lJSonObj: TJSONObject;
 begin
-  lArrResult := TJSONArray.Create;
-  lSeguradora := FSeguradoraPersistencia.ObterSeguradora(ID);
 
-  if Assigned(lSeguradora) then
-    Result := TJson.ObjectToJsonObject(lSeguradora)
-  else
-    Result := TJSONString.Create('Seguradora não encontrada!');
+  with tblSeguradora do
+  begin
+    Open;
+
+    if PesquisarSeguradora(ID) then
+    begin
+      lSeguradora := ObterSeguradoraSelecionada;
+      Result := TJson.ObjectToJsonObject(lSeguradora);
+      lSeguradora.Free;
+    end
+    else
+      Result := TJSONString.Create('Seguradora não encontrada!');
+
+    Close;
+  end;
 
 end;
 
 function TSeguradoraController.Seguradoras: TJSONValue;
 var
-  lListaSeguradora: TList<TSeguradora>;
   lSeguradora: TSeguradora;
   lArrResult: TJSONArray;
   lJSonObj: TJSONObject;
 begin
-  lArrResult := TJSONArray.Create;
-  lListaSeguradora := FSeguradoraPersistencia.ObterListaSeguradora;
 
-  try
-    for lSeguradora in lListaSeguradora do
+  with tblSeguradora do
+  begin
+    Open;
+
+    if IsEmpty then
     begin
+      Result := TJSONString.Create('Seguradora não encontrada!');
+      Close;
+      Exit;
+    end;
+
+    lArrResult := TJSONArray.Create;
+    while not Eof do
+    begin
+      lSeguradora := ObterSeguradoraSelecionada;
       lJSonObj := TJSon.ObjectToJSonObject(lSeguradora);
       lArrResult.AddElement(lJSonObj);
-
+      Next;
     end;
+    Close;
     Result := lArrResult;
-  finally
-    lListaSeguradora.Free;
   end;
 end;
 
-function TSeguradoraController.acceptSeguradoras(
+function TSeguradoraController.acceptSeguradora(
   Seguradora: TJSONObject): TJSONValue;
 var
   lSeguradora: TSeguradora;
 begin
   lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
-  if FSeguradoraPersistencia.IncluirSeguradora(lSeguradora) then
-    Result := TJson.ObjectToJsonObject(
-      FSeguradoraPersistencia.ObterSeguradora(lSeguradora.SeguradoraOID))
-
+  if GravarSeguradora(lSeguradora) then
+    Result := TJSONString.Create('Seguradora gravada com sucesso!')
   else
-    Result := TJSONString.Create('Erro ao incluir a seguradora!')
+    Result := TJSONString.Create('Erro ao gravar a seguradora!')
 end;
 
-procedure TSeguradoraController.SetSeguradoraPersistencia(
-  pSeguradoraPersistencia: ISeguradoraPersistencia);
-begin
-  FSeguradoraPersistencia := pSeguradoraPersistencia;
-end;
 
-function TSeguradoraController.updateSeguradoras(
+function TSeguradoraController.updateSeguradora(
   Seguradora: TJSONObject): TJSONValue;
 var
   lSeguradora: TSeguradora;
 begin
   lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
-  if FSeguradoraPersistencia.AlterarSeguradora(lSeguradora) then
-    Result := TJson.ObjectToJsonObject(
-      FSeguradoraPersistencia.ObterSeguradora(lSeguradora.SeguradoraOID))
+  if GravarSeguradora(lSeguradora) then
+    Result := TJSONString.Create('Seguradora gravada com sucesso!')
   else
-    Result := TJSONString.Create('Erro ao alterar a seguradora!')
+    Result := TJSONString.Create('Erro ao gravar a seguradora!')
 end;
 
 end.

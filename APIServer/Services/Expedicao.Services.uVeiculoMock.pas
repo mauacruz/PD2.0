@@ -23,24 +23,50 @@ type
   end;
 
 implementation
+uses
+  Expedicao.Models.uCombustivel,
+  Expedicao.Models.uSeguro;
 
 { TVeiculoMock }
+
+constructor TVeiculoMock.Create;
+var
+  lVeiculo: TVeiculo;
+  lCombustivel: TCombustivel;
+  lSeguro : TSeguro;
+begin
+  FListaVeiculo := TObjectList<TVeiculo>.Create(True);
+
+  lVeiculo := TVeiculo.Create;
+  lVeiculo.Marca := 'Opalão';
+  //...
+
+  lCombustivel := TCombustivel.Create;
+  lCombustivel.Descricao := 'Gasolina';
+
+  lVeiculo.Combustiveis.Add(lCombustivel);
+
+  lCombustivel := TCombustivel.Create;
+  lCombustivel.Descricao := 'Alcool';
+
+  lVeiculo.Combustiveis.Add(lCombustivel);
+
+
+end;
+
+destructor TVeiculoMock.Destroy;
+begin
+  FListaVeiculo.Clear;
+  FListaVeiculo.Free;
+
+  inherited;
+end;
 
 function TVeiculoMock.AlterarVeiculo(pVeiculo: TVeiculo): Boolean;
 begin
 
 end;
 
-constructor TVeiculoMock.Create;
-begin
-
-end;
-
-destructor TVeiculoMock.Destroy;
-begin
-
-  inherited;
-end;
 
 function TVeiculoMock.ExcluirVeiculo(pVeiculoOID: Integer): Boolean;
 begin
@@ -54,12 +80,12 @@ end;
 
 function TVeiculoMock.ObterListaVeiculo: TList<TVeiculo>;
 begin
-
+  Result := nil;
 end;
 
 function TVeiculoMock.ObterVeiculo(pVeiculoOID: Integer): TVeiculo;
 begin
-
+   result := nil;
 end;
 
 end.

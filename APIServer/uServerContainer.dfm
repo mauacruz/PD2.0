@@ -71,8 +71,8 @@ object ServerContainer1: TServerContainer1
         DirectoryAction = dirExclude
         DirectoryMask = '/templates/*'
       end>
-    Left = 312
-    Top = 216
+    Left = 280
+    Top = 240
   end
   object dsscInfracao: TDSServerClass
     OnGetClass = dsscInfracaoGetClass

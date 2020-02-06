@@ -8,12 +8,10 @@ uses System.SysUtils, System.Classes,
   Datasnap.DSServer, Datasnap.DSCommonServer,
   Datasnap.DSClientMetadata, Datasnap.DSProxyJavaScript,
   IPPeerServer, IPPeerAPI, Datasnap.DSAuth, Datasnap.DSMetadata,
-  Datasnap.DSServerMetadata,
-  Expedicao.Controller.uCombustivel,
-  Expedicao.Controller.uInfracao,
-  Expedicao.Controller.uRomaneio,
-  Expedicao.Controller.uSeguradora,
-  Expedicao.Controller.uVeiculo;
+  Datasnap.DSServerMetadata, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MySQL,
+  FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client;
 
 type
   TServerContainer1 = class(TDataModule)
@@ -50,7 +48,13 @@ var
 implementation
 uses
   uServerMethods,
-  Expedicao.Services.uExpedicaoFactory;
+  Expedicao.Services.uExpedicaoFactory,
+  Expedicao.Controller.uCombustivel,
+  Expedicao.Controller.uInfracao,
+  Expedicao.Controller.uRomaneio,
+  Expedicao.Controller.uSeguradora,
+  Expedicao.Controller.uVeiculo;
+
 
 {$R *.dfm}
 

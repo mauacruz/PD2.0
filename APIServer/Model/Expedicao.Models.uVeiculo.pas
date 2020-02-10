@@ -10,9 +10,9 @@ type
   TVeiculo = class
     private
       FCor: string;
-      FModel: string;
+      FModelo: string;
       FVeiculoOID: Integer;
-      FAno: Integer;
+      FAno: string;
       FMarca: string;
       FRenavan: string;
       FPlaca: string;
@@ -20,10 +20,10 @@ type
       FListaCombustivel: TObjectList<TCombustivel>;
       FListaSeguro: TObjectList<TSeguro>;
 
-      procedure SetAno(const Value: Integer);
+      procedure SetAno(const Value: string);
       procedure SetCor(const Value: string);
       procedure SetMarca(const Value: string);
-      procedure SetModel(const Value: string);
+      procedure SetModelo(const Value: string);
       procedure SetPlaca(const Value: string);
       procedure SetRenavan(const Value: string);
       procedure SetVeiculoOID(const Value: Integer);
@@ -35,11 +35,11 @@ type
 
       property VeiculoOID: Integer read FVeiculoOID write SetVeiculoOID;
       property Marca: string read FMarca write SetMarca;
-      property Model: string read FModel write SetModel;
+      property Modelo: string read FModelo write SetModelo;
       property Placa: string read FPlaca write SetPlaca;
       property Renavan: string read FRenavan write SetRenavan;
       property Cor: string read FCor write SetCor;
-      property Ano: Integer read FAno write SetAno;
+      property Ano: string read FAno write SetAno;
       property Combustiveis: TObjectList<TCombustivel> read FListaCombustivel;
       property Seguros: TObjectList<TSeguro> read FListaSeguro;
 
@@ -67,7 +67,7 @@ begin
   inherited;
 end;
 
-procedure TVeiculo.SetAno(const Value: Integer);
+procedure TVeiculo.SetAno(const Value: string);
 begin
   FAno := Value;
 end;
@@ -82,9 +82,9 @@ begin
   FMarca := Value;
 end;
 
-procedure TVeiculo.SetModel(const Value: string);
+procedure TVeiculo.SetModelo(const Value: string);
 begin
-  FModel := Value;
+  FModelo := Value;
 end;
 
 procedure TVeiculo.SetPlaca(const Value: string);

@@ -30,8 +30,5 @@ object SeguradoraController: TSeguradoraController
       FieldName = 'CORRETOR'
       Size = 50
     end
-    object tblSeguradoraSEGUROOID: TIntegerField
-      FieldName = 'SEGUROOID'
-    end
   end
 end

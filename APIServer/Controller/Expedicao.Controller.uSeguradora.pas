@@ -19,17 +19,15 @@ type
     tblSeguradoraCNPJ: TStringField;
     tblSeguradoraTELEFONE: TStringField;
     tblSeguradoraCORRETOR: TStringField;
-    tblSeguradoraSEGUROOID: TIntegerField;
 
   private
     { Private declarations }
-    function ObterSeguradoraSelecionada: TSeguradora;
     function GravarSeguradora(pSeguradora: TSeguradora): Boolean;
+    function ObterSeguradoraSelecionada: TSeguradora;
     function PesquisarSeguradora(pSeguradoraOID: Integer): Boolean;
+
   public
     { Public declarations }
-
-//    procedure SetSeguradoraPersistencia(pSeguradoraPersistencia: ISeguradoraPersistencia);
 
     function Seguradoras: TJSONValue;
     function Seguradora(ID: Integer): TJSONValue;
@@ -43,33 +41,12 @@ uses
   REST.jSON,
   uDataModule;
 
-
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
 
 { TSeguradoraController }
 
-function TSeguradoraController.cancelSeguradora(
-  ID: Integer): TJSONValue;
-begin
-
-  with tblSeguradora do
-  begin
-    Open;
-
-    if Locate('SEGURADORAOID', ID, []) then
-    begin
-      Delete;
-      Result := TJSONString.Create('Seguradora excluída com sucesso!');
-    end
-    else
-      Result := TJSONString.Create('Erro ao excluir a seguradora!');
-
-    Close;
-  end;
-
-end;
 
 function TSeguradoraController.GravarSeguradora(
   pSeguradora: TSeguradora): Boolean;
@@ -101,7 +78,7 @@ end;
 function TSeguradoraController.ObterSeguradoraSelecionada: TSeguradora;
 begin
   Result := TSeguradora.Create;
-  REsult.SeguradoraOID := tblSeguradoraSEGURADORAOID.AsInteger;
+  Result.SeguradoraOID := tblSeguradoraSEGURADORAOID.AsInteger;
   Result.Descricao  := tblSeguradoraDESCRICAO.AsString;
   Result.CNPJ := tblSeguradoraCNPJ.AsString;
   Result.Telefone := tblSeguradoraTELEFONE.AsString;
@@ -119,29 +96,6 @@ begin
       Exit;
 
     Result := (Locate('SEGURADORAOID', pSeguradoraOID, []))
-  end;
-
-end;
-
-function TSeguradoraController.Seguradora(ID: Integer): TJSONValue;
-var
-  lSeguradora: TSeguradora;
-begin
-
-  with tblSeguradora do
-  begin
-    Open;
-
-    if PesquisarSeguradora(ID) then
-    begin
-      lSeguradora := ObterSeguradoraSelecionada;
-      Result := TJson.ObjectToJsonObject(lSeguradora);
-      lSeguradora.Free;
-    end
-    else
-      Result := TJSONString.Create('Seguradora não encontrada!');
-
-    Close;
   end;
 
 end;
@@ -177,12 +131,41 @@ begin
   end;
 end;
 
+function TSeguradoraController.Seguradora(ID: Integer): TJSONValue;
+var
+  lSeguradora: TSeguradora;
+begin
+
+  with tblSeguradora do
+  begin
+    Open;
+
+    if PesquisarSeguradora(ID) then
+    begin
+      lSeguradora := ObterSeguradoraSelecionada;
+      Result := TJson.ObjectToJsonObject(lSeguradora);
+      lSeguradora.Free;
+    end
+    else
+      Result := TJSONString.Create('Seguradora não encontrada!');
+
+    Close;
+  end;
+
+end;
+
 function TSeguradoraController.acceptSeguradora(
   Seguradora: TJSONObject): TJSONValue;
 var
   lSeguradora: TSeguradora;
 begin
   lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
+  if lSeguradora.SeguradoraOID <> 0 then
+  begin
+    Result := TJSONString.Create('Seguradora já cadastrada. Inclusão cancelada!');
+    Exit;
+  end;
+
   if GravarSeguradora(lSeguradora) then
     Result := TJSONString.Create('Seguradora gravada com sucesso!')
   else
@@ -196,11 +179,43 @@ var
   lSeguradora: TSeguradora;
 begin
   lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
+
+  tblSeguradora.Open;
+  if not PesquisarSeguradora(lSeguradora.SeguradoraOID) then
+  begin
+    Result := TJSONString.Create('Seguradora não encontrada!');
+    Exit;
+  end;
+  tblSeguradora.Close;
+
   if GravarSeguradora(lSeguradora) then
     Result := TJSONString.Create('Seguradora gravada com sucesso!')
   else
     Result := TJSONString.Create('Erro ao gravar a seguradora!')
 end;
+
+function TSeguradoraController.cancelSeguradora(
+  ID: Integer): TJSONValue;
+begin
+
+  tblSeguradora.Open;
+  if not PesquisarSeguradora(ID) then
+  begin
+    Result := TJSONString.Create('Seguradora não encontrada!');
+    Exit;
+  end;
+  tblSeguradora.Close;
+
+  with tblSeguradora do
+  begin
+    Open;
+    PesquisarSeguradora(ID);
+    Delete;
+    Close;
+  end;
+
+end;
+
 
 end.
 

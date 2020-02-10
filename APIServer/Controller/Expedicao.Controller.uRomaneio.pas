@@ -5,19 +5,18 @@ interface
 uses
   System.SysUtils, System.Classes, Datasnap.DSServer,
   Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  System.JSON,
-  Expedicao.Interfaces.uRomaneioPersistencia;
+  System.JSON;
+
 
 type
   TRomaneioController = class(TDSServerModule)
-    procedure DSServerModuleCreate(Sender: TObject);
   private
     { Private declarations }
-    FRomaneioPersistencia: IRomaneioPersistencia;
+//    FRomaneioPersistencia: IRomaneioPersistencia;
   public
     { Public declarations }
 
-    procedure SetRomaneioPersistencia(pRomaneioPersistencia: IRomaneioPersistencia);
+//    procedure SetRomaneioPersistencia(pRomaneioPersistencia: IRomaneioPersistencia);
 
     function Romaneios: TJSONValue;
     function Romaneio(ID: Integer): TJSONValue;
@@ -30,7 +29,7 @@ implementation
 uses
   REST.jSON,
   System.Generics.Collections,
-  Expedicao.Services.uExpedicaoFactory,
+//  Expedicao.Services.uExpedicaoFactory,
   Expedicao.Models.uRomaneio;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
@@ -43,7 +42,7 @@ function TRomaneioController.cancelRomaneio(ID: Integer): TJSONValue;
 var
   lListaRomaneio: TList<TRomaneio>;
 begin
-
+{
   if FRomaneioPersistencia.ExcluirRomaneio(ID) then
   begin
     lListaRomaneio := FRomaneioPersistencia.ObterListaRomaneio;
@@ -57,21 +56,7 @@ begin
   end
   else
     Result := TJSONString.Create('Romaneio não encontrado!');
-
-end;
-
-procedure TRomaneioController.DSServerModuleCreate(Sender: TObject);
-var
-  lFActory: TExpedicaoFactory;
-
-begin
-  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
-  lFActory := TExpedicaoFactory.Create;
-  try
-    FRomaneioPersistencia := lFActory.ObterRomaneioPersistencia(tpMock);
-  finally
-    lFActory.Free;
-  end;
+ }
 end;
 
 function TRomaneioController.Romaneio(ID: Integer): TJSONValue;
@@ -80,6 +65,7 @@ var
   lArrResult: TJSONArray;
   lJSonObj: TJSONObject;
 begin
+{
   lArrResult := TJSONArray.Create;
   lRomaneio := FRomaneioPersistencia.ObterRomaneio(ID);
 
@@ -87,7 +73,7 @@ begin
     Result := TJson.ObjectToJsonObject(lRomaneio)
   else
     Result := TJSONString.Create('Romaneio não encontrado!');
-
+    }
 end;
 
 function TRomaneioController.Romaneios: TJSONValue;
@@ -97,6 +83,7 @@ var
   lArrResult: TJSONArray;
   lJSonObj: TJSONObject;
 begin
+{
   lArrResult := TJSONArray.Create;
   lListaRomaneio := FRomaneioPersistencia.ObterListaRomaneio;
 
@@ -111,19 +98,21 @@ begin
   finally
     lListaRomaneio.Free;
   end;
-
+  }
 end;
 
-procedure TRomaneioController.SetRomaneioPersistencia(
-  pRomaneioPersistencia: IRomaneioPersistencia);
-begin
-  FRomaneioPersistencia := pRomaneioPersistencia;
-end;
+
+//procedure TRomaneioController.SetRomaneioPersistencia(
+//  pRomaneioPersistencia: IRomaneioPersistencia);
+//begin
+//  FRomaneioPersistencia := pRomaneioPersistencia;
+//end;
 
 function TRomaneioController.acceptRomaneio(Romaneio: TJSONObject): TJSONValue;
 var
   lRomaneio: TRomaneio;
 begin
+{
   lRomaneio := TJson.JsonToObject<TRomaneio>(Romaneio);
   if FRomaneioPersistencia.IncluirRomaneio(lRomaneio) then
     Result := TJson.ObjectToJsonObject(
@@ -131,20 +120,21 @@ begin
 
   else
     Result := TJSONString.Create('Erro ao incluir o romaneio!')
-
+ }
 end;
 
 function TRomaneioController.updateRomaneio(Romaneio: TJSONObject): TJSONValue;
 var
   lRomaneio: TRomaneio;
 begin
+{
   lRomaneio := TJson.JsonToObject<TRomaneio>(Romaneio);
   if FRomaneioPersistencia.AlterarRomaneio(lRomaneio) then
     Result := TJson.ObjectToJsonObject(
       FRomaneioPersistencia.ObterRomaneio(lRomaneio.RomaneioOID))
   else
     Result := TJSONString.Create('Erro ao alterar a romaneio!')
-
+ }
 
 end;
 

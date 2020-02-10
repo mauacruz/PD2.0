@@ -5,33 +5,41 @@ interface
 uses
   System.SysUtils, System.Classes, Datasnap.DSServer,
   Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  System.JSON, Expedicao.Interfaces.uCombustivelPersistencia;
+  System.JSON,
+  Expedicao.Models.uCombustivel, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
 
 type
   TCombustivelController = class(TDSServerModule)
-    procedure DSServerModuleCreate(Sender: TObject);
+    tblCombustivel: TFDQuery;
+    tblCombustivelCOMBUSTIVELOID: TIntegerField;
+    tblCombustivelDESCRICAO: TStringField;
+    tblCombustivelVALOR: TBCDField;
+    tblCombustivelUNIDADEMEDIDAOID: TIntegerField;
+
   private
+    function GravarCombustivel(pCombustivel: TCombustivel): Boolean;
+    function ObterCombustivelSelecionado: TCombustivel;
+    function PesquisarCombustivel(pCombustivelOID: Integer): Boolean;
+
     { Private declarations }
-    FCombustivelPersistencia: ICombustivelPersistencia;
+
   public
     { Public declarations }
 
-    procedure setCombustivelPersistencia(pCombustivelPersistencia: ICombustivelPersistencia);
-
     function Combustiveis: TJSONValue;
     function Combustivel(ID: Integer): TJSONValue;
-    function updateCombustiveis(Combustivel: TJSONObject): TJSONValue;
-    function acceptCombustiveis(Combustivel: TJSONObject): TJSONValue;
-    function cancelCombustiveis(ID: Integer): TJSONValue;
+    function updateCombustivel(Combustivel: TJSONObject): TJSONValue;
+    function acceptCombustivel(Combustivel: TJSONObject): TJSONValue;
+    function cancelCombustivel(ID: Integer): TJSONValue;
   end;
 
 implementation
 uses
   REST.jSON,
-  System.Generics.Collections,
-  Expedicao.Services.uExpedicaoFactory,
-  Expedicao.Models.uCombustivel;
-
+  uDataModule;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -39,113 +47,166 @@ uses
 
 { TCombustivelController }
 
-function TCombustivelController.cancelCombustiveis(
-  ID: Integer): TJSONValue;
-var
-  lListaCombustivel: TList<TCombustivel>;
+function TCombustivelController.GravarCombustivel(
+  pCombustivel: TCombustivel): Boolean;
 begin
-  if FCombustivelPersistencia.ExcluirCombustivel(ID) then
-  begin
-    lListaCombustivel := FCombustivelPersistencia.ObterListaCombustivel;
-    try
-      Result := TJSONString.Create('Total de Combustíveis cadastrados: ' +
-        lListaCombustivel.Count.ToString);
+  Result := False;
 
-    finally
-      lListaCombustivel.Free;
-    end;
-  end
+  tblCombustivel.Open;
+  if pCombustivel.CombustivelOID <= 0 then
+    tblCombustivel.Append
   else
-    Result := TJSONString.Create('Combustível não encontrado!');
+  begin
+    if not PesquisarCombustivel(pCombustivel.CombustivelOID) then
+     Exit
+    else
+     tblCombustivel.Edit;
+  end;
+
+  tblCombustivelDESCRICAO.AsString := pCombustivel.Descricao;
+  tblCombustivelVALOR.AsFloat := pCombustivel.Valor;
+  tblCombustivelUNIDADEMEDIDAOID.AsInteger := pCombustivel.UnidadeDeMedidaOID;
+
+  tblCombustivel.post;
+  tblCombustivel.Close;
+  Result := true;
+
+end;
+
+function TCombustivelController.ObterCombustivelSelecionado: TCombustivel;
+begin
+  Result := TCombustivel.Create;
+
+  Result.CombustivelOID := tblCombustivelCOMBUSTIVELOID.AsInteger;
+  Result.Descricao  := tblCombustivelDESCRICAO.AsString;
+  Result.Valor := tblCombustivelVALOR.AsFloat;
+  Result.UnidadeDeMedidaOID := tblCombustivelUNIDADEMEDIDAOID.AsInteger;
+end;
+
+function TCombustivelController.PesquisarCombustivel(
+  pCombustivelOID: Integer): Boolean;
+begin
+  Result := False;
+
+  with tblCombustivel do
+  begin
+    if IsEmpty then
+      Exit;
+
+    Result := (Locate('COMBUSTIVELOID', pCombustivelOID, []))
+  end;
 
 end;
 
 function TCombustivelController.Combustiveis: TJSONValue;
 var
-  lListaCombustivel: TList<TCombustivel>;
   lCombustivel: TCombustivel;
   lArrResult: TJSONArray;
   lJSonObj: TJSONObject;
 begin
-  lArrResult := TJSONArray.Create;
-  lListaCombustivel := FCombustivelPersistencia.ObterListaCombustivel;
+  with tblCombustivel do
+  begin
+    Open;
 
-  try
-    for lCombustivel in lListaCombustivel do
+    if IsEmpty then
     begin
+      Result := TJSONString.Create('Combustivel não encontrado!');
+      Close;
+      Exit;
+    end;
+
+    lArrResult := TJSONArray.Create;
+    while not Eof do
+    begin
+      lCombustivel := ObterCombustivelSelecionado;
       lJSonObj := TJSon.ObjectToJSonObject(lCombustivel);
       lArrResult.AddElement(lJSonObj);
-
+      Next;
     end;
+    Close;
     Result := lArrResult;
-  finally
-    lListaCombustivel.Free;
   end;
-
 end;
-
 
 function TCombustivelController.Combustivel(ID: Integer): TJSONValue;
 var
   lCombustivel: TCombustivel;
-  lArrResult: TJSONArray;
-  lJSonObj: TJSONObject;
 begin
-  lArrResult := TJSONArray.Create;
-  lCombustivel := FCombustivelPersistencia.ObterCombustivel(ID);
+  with tblCombustivel do
+  begin
+    Open;
 
-  if Assigned(lCombustivel) then
-    Result := TJson.ObjectToJsonObject(lCombustivel)
-  else
-    Result := TJSONString.Create('Combustível não encontrado!');
+    if PesquisarCombustivel(ID) then
+    begin
+      lCombustivel := ObterCombustivelSelecionado;
+      Result := TJson.ObjectToJsonObject(lCombustivel);
+      lCombustivel.Free;
+    end
+    else
+      Result := TJSONString.Create('Combustivel não encontrado!');
 
-end;
-
-procedure TCombustivelController.DSServerModuleCreate(Sender: TObject);
-var
-  lFActory: TExpedicaoFactory;
-begin
-  //TODO: Confirmar como se faz a injeção de dependencia - Em que momento o DSServerModule é instanciado?
-  lFActory := TExpedicaoFactory.Create;
-  try
-    FCombustivelPersistencia := lFActory.ObterCombustivelPersistencia(tpMock);
-  finally
-    lFActory.Free;
+    Close;
   end;
 end;
 
-procedure TCombustivelController.setCombustivelPersistencia(
-  pCombustivelPersistencia: ICombustivelPersistencia);
-begin
-  FCombustivelPersistencia := pCombustivelPersistencia;
-end;
-
-function TCombustivelController.acceptCombustiveis(
+function TCombustivelController.acceptCombustivel(
   Combustivel: TJSONObject): TJSONValue;
 var
   lCombustivel: TCombustivel;
 begin
   lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
-  if FCombustivelPersistencia.IncluirCombustivel(lCombustivel) then
-    Result := TJson.ObjectToJsonObject(
-      FCombustivelPersistencia.ObterCombustivel(lCombustivel.CombustivelOID))
+  if lCombustivel.CombustivelOID <> 0 then
+  begin
+    Result := TJSONString.Create('Combustivel já cadastrado. Inclusão cancelada!');
+    Exit;
+  end;
 
+  if GravarCombustivel(lCombustivel) then
+    Result := TJSONString.Create('Combustivel gravado com sucesso!')
   else
-    Result := TJSONString.Create('Erro ao incluir a Combustivel!')
+    Result := TJSONString.Create('Erro ao gravar a combustivel!')
 
 end;
 
-function TCombustivelController.updateCombustiveis(
+function TCombustivelController.updateCombustivel(
   Combustivel: TJSONObject): TJSONValue;
 var
   lCombustivel: TCombustivel;
 begin
   lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
-  if FCombustivelPersistencia.AlterarCombustivel(lCombustivel) then
-    Result := TJson.ObjectToJsonObject(
-      FCombustivelPersistencia.ObterCombustivel(lCombustivel.CombustivelOID))
+
+  tblCombustivel.Open;
+  if not PesquisarCombustivel(lCombustivel.CombustivelOID) then
+  begin
+    Result := TJSONString.Create('Combustivel não encontrado!');
+    Exit;
+  end;
+  tblCombustivel.Close;
+
+  if GravarCombustivel(lCombustivel) then
+    Result := TJSONString.Create('Combustivel gravado com sucesso!')
   else
-    Result := TJSONString.Create('Erro ao alterar o combustivel!')
+    Result := TJSONString.Create('Erro ao gravar a combustivel!')
+
+end;
+
+function TCombustivelController.cancelCombustivel(ID: Integer): TJSONValue;
+begin
+  tblCombustivel.Open;
+  if not PesquisarCombustivel(ID) then
+  begin
+    Result := TJSONString.Create('Combustivel não encontrado!');
+    Exit;
+  end;
+  tblCombustivel.Close;
+
+  with tblCombustivel do
+  begin
+    Open;
+    PesquisarCombustivel(ID);
+    Delete;
+    Close;
+  end;
 
 end;
 

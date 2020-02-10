@@ -5,27 +5,29 @@ interface
 type
   TInfracao = class
     private
+      FInfracaoOID: Integer;
       FTipoInfracao: string;
-      FValor: Currency;
-      FHora: string;
-      FAutorInfracao: Integer;
       FVeiculoOID: Integer;
+      FData: TDateTime;
+      FHora: string;
       FAutoInfracao: string;
       FOrgao: string;
-      FInfracaoOID: Integer;
-      FData: TDateTime;
+      FValor: Currency;
+      FAutorInfracao: Integer;
 
-      procedure SetAutoInfracao(const Value: string);
-      procedure SetAutorInfracao(const Value: Integer);
+      procedure SetInfracaoOID(const Value: Integer);
+      procedure SetTipoInfracao(const Value: string);
+      procedure SetVeiculoOID(const Value: Integer);
       procedure SetData(const Value: TDateTime);
       procedure SetHora(const Value: string);
-      procedure SetInfracaoOID(const Value: Integer);
+      procedure SetAutoInfracao(const Value: string);
       procedure SetOrgao(const Value: string);
-      procedure SetTipoInfracao(const Value: string);
       procedure SetValor(const Value: Currency);
-      procedure SetVeiculoOID(const Value: Integer);
+      procedure SetAutorInfracao(const Value: Integer);
+
     public
       property InfracaoOID: Integer read FInfracaoOID write SetInfracaoOID;
+      property TipoInfracao: string read FTipoInfracao write SetTipoInfracao;
       property VeiculoOID: Integer read FVeiculoOID write SetVeiculoOID;
       property Data: TDateTime read FData write SetData;
       property Hora: string read FHora write SetHora;
@@ -33,7 +35,6 @@ type
       property Orgao: string read FOrgao write SetOrgao;
       property Valor: Currency read FValor write SetValor;
       property AutorInfracao: Integer read FAutorInfracao write SetAutorInfracao;
-      property TipoInfracao: string read FTipoInfracao write SetTipoInfracao;
   end;
 
 implementation

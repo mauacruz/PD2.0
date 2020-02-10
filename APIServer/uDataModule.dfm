@@ -6,6 +6,7 @@ object DataModule1: TDataModule1
     ConnectionName = 'PD2.0'
     Params.Strings = (
       'ConnectionDef=PD2.0')
+    Connected = True
     LoginPrompt = False
     Left = 183
     Top = 118

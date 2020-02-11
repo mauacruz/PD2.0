@@ -12,6 +12,7 @@ object SeguroController: TSeguroController
       FieldName = 'SEGUROOID'
       Origin = 'SEGUROOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblSeguroSEGURADORAOID: TIntegerField
       AutoGenerateValue = arDefault
@@ -53,6 +54,7 @@ object SeguroController: TSeguroController
       FieldName = 'SEGURADORAOID'
       Origin = 'SEGURADORAOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblSeguradoraDESCRICAO: TStringField
       AutoGenerateValue = arDefault

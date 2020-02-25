@@ -11,7 +11,7 @@ object DataModule1: TDataModule1
     Top = 118
   end
   object MySqlDriver: TFDPhysMySQLDriverLink
-    VendorLib = 'C:\Users\mau\Documents\projetos\PD2.0\APIServer\libmysql.dll'
+    VendorLib = 'C:\Projetos\PD2.0\APIServer\libmysql.dll'
     Left = 143
     Top = 62
   end

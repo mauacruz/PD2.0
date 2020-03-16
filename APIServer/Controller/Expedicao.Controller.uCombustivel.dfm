@@ -5,7 +5,7 @@ object CombustivelController: TCombustivelController
   object tblCombustivel: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.combustivel')
+      'SELECT * FROM combustivel')
     Left = 80
     Top = 24
     object tblCombustivelCOMBUSTIVELOID: TIntegerField

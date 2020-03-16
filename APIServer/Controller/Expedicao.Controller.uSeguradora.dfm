@@ -5,7 +5,7 @@ object SeguradoraController: TSeguradoraController
   object tblSeguradora: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.seguradora')
+      'SELECT * FROM seguradora')
     Left = 128
     Top = 98
     object tblSeguradoraSEGURADORAOID: TIntegerField

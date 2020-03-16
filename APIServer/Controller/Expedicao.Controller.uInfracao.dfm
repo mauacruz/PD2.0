@@ -5,13 +5,14 @@ object InfracaoController: TInfracaoController
   object tblInfracao: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.infracao')
+      'SELECT * FROM infracao')
     Left = 82
     Top = 86
     object tblInfracaoINFRACAOOID: TFDAutoIncField
       FieldName = 'INFRACAOOID'
       Origin = 'INFRACAOOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblInfracaoVEICULOOID: TIntegerField
       AutoGenerateValue = arDefault

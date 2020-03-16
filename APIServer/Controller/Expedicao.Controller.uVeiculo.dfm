@@ -5,13 +5,14 @@ object VeiculoController: TVeiculoController
   object tblVeiculo: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.veiculo')
+      'SELECT * FROM veiculo')
     Left = 143
     Top = 28
     object tblVeiculoVEICULOOID: TFDAutoIncField
       FieldName = 'VEICULOOID'
       Origin = 'VEICULOOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblVeiculoMARCA: TStringField
       AutoGenerateValue = arDefault
@@ -140,6 +141,7 @@ object VeiculoController: TVeiculoController
       FieldName = 'SEGUROOID'
       Origin = 'SEGUROOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblSeguroSEGURADORAOID: TIntegerField
       AutoGenerateValue = arDefault
@@ -181,6 +183,7 @@ object VeiculoController: TVeiculoController
       FieldName = 'COMBUSTIVELOID'
       Origin = 'COMBUSTIVELOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblCombustivelDESCRICAO: TStringField
       AutoGenerateValue = arDefault

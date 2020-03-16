@@ -5,13 +5,14 @@ object RomaneioController: TRomaneioController
   object tblRomaneio: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.romaneio')
+      'SELECT * FROM romaneio')
     Left = 51
     Top = 90
     object tblRomaneioROMANEIOOID: TFDAutoIncField
       FieldName = 'ROMANEIOOID'
       Origin = 'ROMANEIOOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblRomaneioVEICULOOID: TIntegerField
       AutoGenerateValue = arDefault
@@ -68,13 +69,14 @@ object RomaneioController: TRomaneioController
   object tblVeiculo: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.veiculo')
+      'SELECT * FROM veiculo')
     Left = 146
     Top = 87
     object tblVeiculoVEICULOOID: TFDAutoIncField
       FieldName = 'VEICULOOID'
       Origin = 'VEICULOOID'
       ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
     end
     object tblVeiculoMARCA: TStringField
       AutoGenerateValue = arDefault

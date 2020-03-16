@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{86CB38E0-FCAB-4199-893C-F07C643D9B36}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="APIServerWebModule\APIServerWebModule.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="APIServer\ServerAPI.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="APIServerWebModule">
+        <MSBuild Projects="APIServerWebModule\APIServerWebModule.dproj"/>
+    </Target>
+    <Target Name="APIServerWebModule:Clean">
+        <MSBuild Projects="APIServerWebModule\APIServerWebModule.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="APIServerWebModule:Make">
+        <MSBuild Projects="APIServerWebModule\APIServerWebModule.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ServerAPI">
+        <MSBuild Projects="APIServer\ServerAPI.dproj"/>
+    </Target>
+    <Target Name="ServerAPI:Clean">
+        <MSBuild Projects="APIServer\ServerAPI.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ServerAPI:Make">
+        <MSBuild Projects="APIServer\ServerAPI.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="APIServerWebModule;ServerAPI"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="APIServerWebModule:Clean;ServerAPI:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="APIServerWebModule:Make;ServerAPI:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

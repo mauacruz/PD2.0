@@ -5,7 +5,7 @@ object SeguroController: TSeguroController
   object tblSeguro: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.seguro')
+      'SELECT * FROM seguro')
     Left = 98
     Top = 85
     object tblSeguroSEGUROOID: TFDAutoIncField
@@ -39,7 +39,7 @@ object SeguroController: TSeguroController
   object tblSeguradora: TFDQuery
     Connection = DataModule1.cnMysql
     SQL.Strings = (
-      'SELECT * FROM `PD2.0`.seguradora '
+      'SELECT * FROM seguradora '
       'WHERE SeguradoraOID = :SeguradoraOID')
     Left = 169
     Top = 83

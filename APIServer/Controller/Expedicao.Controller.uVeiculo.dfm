@@ -1,9 +1,10 @@
 object VeiculoController: TVeiculoController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 324
   Width = 374
   object tblVeiculo: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM veiculo')
     Left = 143
@@ -56,7 +57,6 @@ object VeiculoController: TVeiculoController
     MasterSource = dsVeiculoMasterCombustivel
     MasterFields = 'VEICULOOID'
     DetailFields = 'VEICULOID'
-    Connection = DataModule1.cnMysql
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]
     FetchOptions.DetailCascade = True
     FetchOptions.DetailServerCascade = True
@@ -89,7 +89,6 @@ object VeiculoController: TVeiculoController
     MasterSource = dsVeiculoMasterSeguro
     MasterFields = 'VEICULOOID'
     DetailFields = 'VEICULOOID'
-    Connection = DataModule1.cnMysql
     FetchOptions.AssignedValues = [evDetailCascade, evDetailServerCascade]
     FetchOptions.DetailCascade = True
     FetchOptions.DetailServerCascade = True
@@ -124,7 +123,6 @@ object VeiculoController: TVeiculoController
     Top = 120
   end
   object tblSeguro: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM `PD2.0`.seguro'
       'WHERE SeguroOID = :SeguroOID')
@@ -166,7 +164,6 @@ object VeiculoController: TVeiculoController
     end
   end
   object tblCombustivel: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM `PD2.0`.combustivel'
       'WHERE CombustivelOID = :CombustivelOID')

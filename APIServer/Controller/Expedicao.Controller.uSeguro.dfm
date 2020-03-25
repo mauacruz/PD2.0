@@ -1,9 +1,10 @@
 object SeguroController: TSeguroController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 199
   Width = 293
   object tblSeguro: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM seguro')
     Left = 98
@@ -37,7 +38,6 @@ object SeguroController: TSeguroController
     end
   end
   object tblSeguradora: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM seguradora '
       'WHERE SeguradoraOID = :SeguradoraOID')

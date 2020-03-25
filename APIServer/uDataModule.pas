@@ -10,12 +10,14 @@ uses
 
 type
   TDataModule1 = class(TDataModule)
-    cnMysql: TFDConnection;
     MySqlDriver: TFDPhysMySQLDriverLink;
+    procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
+
   public
     { Public declarations }
+    function ObterConnection: TFDConnection;
   end;
 
 var
@@ -26,5 +28,37 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
+
+procedure TDataModule1.DataModuleCreate(Sender: TObject);
+var
+  oParams: TStrings;
+begin
+
+  FDManager.Close;
+  oParams := TStringList.Create;
+  try
+    oParams.Add('Database=PD2.0');
+    oParams.Add('User_Name=mauacruz');
+    oParams.Add('Password=mcmac');
+    oParams.Add('Server=localhost');
+    oParams.Add('port=3306');
+    oParams.Add('Pooled=True');
+
+    FDManager.AddConnectionDef('PD2.0', 'MySQL', oParams);
+    FDManager.Open;
+
+  finally
+    oParams.Free;
+  end;
+
+
+end;
+
+function TDataModule1.ObterConnection: TFDConnection;
+begin
+  Result := TFDConnection.Create(nil);
+  Result.ConnectionDefName := 'PD2.0';
+  Result.Connected := True;
+end;
 
 end.

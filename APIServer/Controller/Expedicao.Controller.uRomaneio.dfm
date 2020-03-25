@@ -1,9 +1,10 @@
 object RomaneioController: TRomaneioController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 155
   Width = 332
   object tblRomaneio: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM romaneio')
     Left = 51
@@ -67,7 +68,6 @@ object RomaneioController: TRomaneioController
     end
   end
   object tblVeiculo: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM veiculo')
     Left = 146

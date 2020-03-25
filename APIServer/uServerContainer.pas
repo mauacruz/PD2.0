@@ -13,14 +13,8 @@ uses System.SysUtils, System.Classes,
   FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MySQL,
-  FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client;
-
-//  Expedicao.Controller.uCombustivel,
-//  Expedicao.Controller.uInfracao,
-//  Expedicao.Controller.uRomaneio,
-//  Expedicao.Controller.uVeiculo,
-//  Expedicao.Controller.uSeguradora;
-
+  FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
+  uDataModule;
 
 
 type

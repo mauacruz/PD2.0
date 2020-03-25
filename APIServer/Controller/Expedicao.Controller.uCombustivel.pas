@@ -18,6 +18,8 @@ type
     tblCombustivelDESCRICAO: TStringField;
     tblCombustivelVALOR: TBCDField;
     tblCombustivelUNIDADEMEDIDAOID: TIntegerField;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
 
   private
     function GravarCombustivel(pCombustivel: TCombustivel): Boolean;
@@ -147,6 +149,16 @@ begin
 
     Close;
   end;
+end;
+
+procedure TCombustivelController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblCombustivel.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TCombustivelController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblCombustivel.Connection.Free;
 end;
 
 function TCombustivelController.acceptCombustivel(

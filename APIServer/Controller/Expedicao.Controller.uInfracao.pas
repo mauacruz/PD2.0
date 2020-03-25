@@ -25,6 +25,8 @@ type
     tblInfracaoVALOR: TBCDField;
     tblInfracaoAUTORINFRACAO: TIntegerField;
     tblInfracaoTIPOINFRACAO: TStringField;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
   private
     { Private declarations }
 
@@ -225,6 +227,16 @@ begin
     Delete;
     Close;
   end;
+end;
+
+procedure TInfracaoController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblInfracao.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TInfracaoController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblInfracao.Connection.Free;
 end;
 
 end.

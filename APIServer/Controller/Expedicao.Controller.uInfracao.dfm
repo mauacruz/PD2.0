@@ -1,9 +1,10 @@
 object InfracaoController: TInfracaoController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 165
   Width = 226
   object tblInfracao: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM infracao')
     Left = 82

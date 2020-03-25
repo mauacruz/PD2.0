@@ -1,9 +1,10 @@
 object CombustivelController: TCombustivelController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 159
   Width = 239
   object tblCombustivel: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM combustivel')
     Left = 80

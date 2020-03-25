@@ -36,6 +36,8 @@ type
     tblRomaneioKMSAIDA: TBCDField;
     tblRomaneioKMRETORNO: TBCDField;
     tblRomaneioKMRODADO: TBCDField;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
   private
     { Private declarations }
 
@@ -235,6 +237,18 @@ begin
     Delete;
     Close;
   end;
+end;
+
+procedure TRomaneioController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblRomaneio.Connection := datamodule1.ObterConnection;
+  tblVeiculo.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TRomaneioController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblRomaneio.Connection.Free;
+  tblVeiculo.Connection.Free;
 end;
 
 end.

@@ -44,6 +44,8 @@ type
     tblSeguroCOBERTURA: TStringField;
     dsVeiculoMasterSeguro: TDataSource;
     saVeiculo: TFDSchemaAdapter;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
 
   private
     { Private declarations }
@@ -318,6 +320,25 @@ begin
     Delete;
     Close;
   end;
+
+end;
+
+procedure TVeiculoController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblVeiculo.Connection := datamodule1.ObterConnection;
+  tblVeiculoCombustivel.Connection := datamodule1.ObterConnection;
+  tblVeiculoSeguro.Connection := datamodule1.ObterConnection;
+  tblCombustivel.Connection := datamodule1.ObterConnection;
+  tblSeguro.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TVeiculoController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblVeiculo.Connection.Free;
+  tblVeiculoCombustivel.Connection.Free;
+  tblVeiculoSeguro.Connection.Free;
+  tblCombustivel.Connection.Free;
+  tblSeguro.Connection.Free;
 
 end;
 

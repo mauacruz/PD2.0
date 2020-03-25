@@ -1,9 +1,10 @@
 object SeguradoraController: TSeguradoraController
   OldCreateOrder = False
+  OnCreate = DSServerModuleCreate
+  OnDestroy = DSServerModuleDestroy
   Height = 218
   Width = 407
   object tblSeguradora: TFDQuery
-    Connection = DataModule1.cnMysql
     SQL.Strings = (
       'SELECT * FROM seguradora')
     Left = 128

@@ -19,9 +19,12 @@ type
     tblSeguradoraCNPJ: TStringField;
     tblSeguradoraTELEFONE: TStringField;
     tblSeguradoraCORRETOR: TStringField;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
 
   private
     { Private declarations }
+
     function GravarSeguradora(pSeguradora: TSeguradora): Boolean;
     function ObterSeguradoraSelecionada: TSeguradora;
     function PesquisarSeguradora(pSeguradoraOID: Integer): Boolean;
@@ -52,7 +55,6 @@ function TSeguradoraController.GravarSeguradora(
   pSeguradora: TSeguradora): Boolean;
 begin
   Result := False;
-
   tblSeguradora.Open;
   if pSeguradora.SeguradoraOID <= 0 then
     tblSeguradora.Append
@@ -71,6 +73,7 @@ begin
 
   tblSeguradora.post;
   tblSeguradora.Close;
+  tblseguradora.Connection.Free;
   Result := true;
 
 end;
@@ -216,6 +219,15 @@ begin
 
 end;
 
+procedure TSeguradoraController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblSeguradora.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TSeguradoraController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblSeguradora.Connection.Free;
+end;
 
 end.
 

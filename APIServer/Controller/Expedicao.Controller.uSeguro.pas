@@ -29,6 +29,8 @@ type
     tblSeguradoraCNPJ: TStringField;
     tblSeguradoraTELEFONE: TStringField;
     tblSeguradoraCORRETOR: TStringField;
+    procedure DSServerModuleCreate(Sender: TObject);
+    procedure DSServerModuleDestroy(Sender: TObject);
   private
     { Private declarations }
     function GravarSeguro(pSeguro: TSeguro): Boolean;
@@ -237,6 +239,18 @@ begin
 end;
 
 
+
+procedure TSeguroController.DSServerModuleCreate(Sender: TObject);
+begin
+  tblSeguradora.Connection := datamodule1.ObterConnection;
+  tblSeguro.Connection := datamodule1.ObterConnection;
+end;
+
+procedure TSeguroController.DSServerModuleDestroy(Sender: TObject);
+begin
+  tblSeguradora.Connection.Free;
+  tblSeguro.Connection.Free;
+end;
 
 end.
 

@@ -94,6 +94,13 @@ procedure TWebModule1.WebModuleBeforeDispatch(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
 begin
   Response.SetCustomHeader('Access-Control-Allow-Origin','*');
+
+  if Trim(Request.GetFieldByName('Access-Control-Request-Headers')) <> '' then
+  begin
+    Response.SetCustomHeader('Access-Control-Allow-Headers', Request.GetFieldByName('Access-Control-Request-Headers'));
+    Handled := True;
+  end;
+
   if FServerFunctionInvokerAction <> nil then
     FServerFunctionInvokerAction.Enabled := AllowServerFunctionInvoker;
 end;

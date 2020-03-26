@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html ng-app="AppCAP">
+<head>
+	<title>Prof. Dev</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/modal.js"></script>
+
+	<link rel="stylesheet" href="css/bootstrap.css">
+
+	<script src="https://kit.fontawesome.com/2bf122f90a.js" crossorigin="anonymous"></script>
+	
+	<script>
+		angular.module("AppCAP",[]);
+		angular.module("AppCAP").controller("AppCAPCtrl", function ($scope, $http) {
+			$scope.company ="Professional Dev";
+			$scope.combustiveis = [];
+
+			var carregarDados = function combustivel(){
+				$http({
+					method: 'GET',
+					url:'http://localhost:49901/datasnap/rest/TCombustivelController/combustiveis'
+				}).then( function onSuccess(response){
+					$scope.combustiveis = response.data.result[0];	
+				}).catch( function onError(response){
+					$scope.resultado = response.data.result[0];	
+				});
+
+				$scope.oper = 'I';
+			};
+			 
+			
+
+			carregarDados();
+
+			
+			$scope.adicionarRegistro = function (combustivel){
+				//alert('insert - PUT');
+				$http({
+					method: 'PUT',
+					url:'http://localhost:49901/datasnap/rest/TCombustivelController/combustivel',
+					data: combustivel
+				}).then( function onSuccess(response){
+					$scope.resultado = response.data.result[0];	
+				}).catch( function onError(response){
+					$scope.resultado = response.data.result[0];	
+				});
+				//console.log('dentro: '+$scope.resultado);
+			};
+
+			$scope.editarRegistro = function (combustivel){
+				//alert('update - POST');
+				$http({
+					method: 'POST',
+					url:'http://localhost:49901/datasnap/rest/TCombustivelController/combustivel',
+					data: combustivel
+				}).then( function onSuccess(response){
+					$scope.resultado = response.data.result[0];	
+				}).catch( function onError(response){
+					$scope.resultado = response.data.result[0];	
+				});
+				//console.log('dentro: '+$scope.resultado);
+			};
+
+			$scope.editar = function(combustivel){
+				$scope.combustivel = combustivel;
+				$scope.oper = 'U';
+				
+				$('#myModal').modal('show');
+			};
+
+
+			$scope.salvar = function(combustivel){
+				console.log('salvar registro - '+$scope.oper);
+				if ($scope.oper == 'U'){
+					$scope.editarRegistro(combustivel);
+				}else{
+					$scope.adicionarRegistro(combustivel);
+				}
+
+				console.log('apos: '+$scope.resultado);
+				
+				delete $scope.combustivel;
+				
+				$scope.Frmcombustivel.$setPristine();
+				$('#myModal').modal('hide');
+
+				//carregarDados();
+			};
+
+			$scope.deletar = function (combustiveis){
+				$scope.combustiveis = combustiveis.filter(function (combustivel) {
+					if (!combustivel.deletar)  
+						return combustivel;
+				});
+			};
+			
+		});
+	</script>
+	
+	<style type="text/css">
+		.bloco {
+			 margin-right: auto;
+			 margin-left: auto;
+		}
+		.form-control{
+			margin-bottom: 10px;
+		}
+
+		.alinhar_direita{
+			text-align: right;
+		}
+
+	</style>
+
+</head>
+
+<body ng-controller="AppCAPCtrl">
+
+	<div class="container">
+		<!-- DIV Modal -->
+		<div id="myModal" class="modal fade" role="dialog">
+			<div class="modal-dialog  modal-lg">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">Combustíveis</h4></div>
+
+					<div class="modal-body">
+						<form name="Frmcombustivel">
+							<div class="row" >
+								<div class="col-md-12">
+									<label for="descricaoid">Descricao</label>
+									<input class="form-control" type="text" name="descricao" id="descricaoid" ng-model="combustivel.descricao" ng-required="true">
+								</div>
+									 
+								<div class="col-md-4">
+									<label for="valorid">Valor</label>
+									<input class="form-control" type="number" name="valor" id="valorid" ng-model="combustivel.valor" ng-required="true">
+								</div>
+
+								<div class="col-md-8">
+									<label for="vencimentoid">Unidade de medida</label>
+									<input class="form-control" type="number" name="medida" id="medida" ng-model="combustivel.unidadeDeMedidaOID" ng-required="true">
+								</div>
+
+								<div class="col-md-6">
+									<button class="btn btn-primary btn-block"  ng-click="salvar(combustivel)" ng-disabled="Frmcombustivel.$invalid">Salvar</button>
+								</div>
+							</div>   
+							{{combustivel}}
+							{{resultado}}					
+						</form>	
+					</div>
+								
+					<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+				</div>
+			</div>
+		</div><!-- FINAL DIV Modal -->
+	
+		<main>
+			<div class="bloco">
+				<header>
+					<h2>Cadastro de Combustíveis</h2>
+				</header>
+				
+				<section>
+					<table class="table table-striped" style="margin-top: 10px">
+						<tr>	
+							<th>Descrição</th>
+							<th class="alinhar_direita">Valor</th>
+							<th>Unid. medida</th>
+						</tr>
+						<tr ng-repeat = "combustivel in combustiveis">
+							<td>
+								<a href=""><i class="fas fa-edit" ng-click="editar(combustivel)"></i></a>&nbsp;
+								<a href=""><i class="far fa-trash-alt" ng-click="deletar(combustiveis)"></i></a>&nbsp;
+								{{combustivel.descricao}}
+							</td>
+							<td align="right">{{combustivel.valor | currency: "R$ "}}</td>
+							<td>{{combustivel.unidadeDeMedidaOID}}</td>
+						</tr>
+					</table>
+				
+					<div class="row" >
+						<div  class="col-md-6">
+							<input type="button" name="btn_novo" class="btn btn-lg btn-primary launch-modal" value="Cadastrar Novo">
+						</div>
+						<div class="col-md-6"></div>
+					</div>
+				</section>
+			</div>
+		</main>
+	</div>
+</body>
+</html>

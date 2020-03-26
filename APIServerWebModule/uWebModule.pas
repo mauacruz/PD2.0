@@ -98,11 +98,13 @@ begin
   if Trim(Request.GetFieldByName('Access-Control-Request-Headers')) <> '' then
   begin
     Response.SetCustomHeader('Access-Control-Allow-Headers', Request.GetFieldByName('Access-Control-Request-Headers'));
+    Response.SetCustomHeader('Access-Control-Allow-Methods','*');
     Handled := True;
   end;
 
   if FServerFunctionInvokerAction <> nil then
     FServerFunctionInvokerAction.Enabled := AllowServerFunctionInvoker;
+
 end;
 
 function TWebModule1.AllowServerFunctionInvoker: Boolean;

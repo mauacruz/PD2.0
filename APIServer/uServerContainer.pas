@@ -2,12 +2,13 @@ unit uServerContainer;
 
 interface
 
-uses System.SysUtils, System.Classes,
+uses IPPeerServer, IPPeerAPI,
+  System.SysUtils, System.Classes,
   Datasnap.DSTCPServerTransport,
   Datasnap.DSHTTPCommon, Datasnap.DSHTTP,
   Datasnap.DSServer, Datasnap.DSCommonServer,
   Datasnap.DSClientMetadata, Datasnap.DSProxyJavaScript,
-  IPPeerServer, IPPeerAPI, Datasnap.DSAuth, Datasnap.DSMetadata, System.JSON,
+   Datasnap.DSAuth, Datasnap.DSMetadata, System.JSON,
   Data.DBXCommon, Datasnap.DSServerMetadata,
 
   FireDAC.Stan.Intf, FireDAC.Stan.Option,
@@ -53,15 +54,12 @@ var
 
 implementation
 uses
-//  Expedicao.Services.uExpedicaoFactory,
   Expedicao.Controller.uCombustivel,
   Expedicao.Controller.uInfracao,
   Expedicao.Controller.uRomaneio,
   Expedicao.Controller.uVeiculo,
   Expedicao.Controller.uSeguradora,
   Expedicao.Controller.uSeguro;
-
-
 
 {$R *.dfm}
 

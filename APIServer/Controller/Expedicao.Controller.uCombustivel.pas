@@ -60,7 +60,7 @@ begin
   else
   begin
     if not PesquisarCombustivel(pCombustivel.CombustivelOID) then
-     Exit
+       raise EDatabaseError.Create('Combustível não encontrado')
     else
      tblCombustivel.Edit;
   end;
@@ -112,9 +112,8 @@ begin
 
     if IsEmpty then
     begin
-      Result := TJSONString.Create('Combustivel não encontrado!');
       Close;
-      Exit;
+      raise EDatabaseError.Create('Não existem combustíveis cadastrados!');
     end;
 
     lArrResult := TJSONArray.Create;
@@ -137,17 +136,20 @@ begin
   with tblCombustivel do
   begin
     Open;
+    try
 
-    if PesquisarCombustivel(ID) then
-    begin
-      lCombustivel := ObterCombustivelSelecionado;
-      Result := TJson.ObjectToJsonObject(lCombustivel);
-      lCombustivel.Free;
-    end
-    else
-      Result := TJSONString.Create('Combustivel não encontrado!');
+      if PesquisarCombustivel(ID) then
+      begin
+        lCombustivel := ObterCombustivelSelecionado;
+        Result := TJson.ObjectToJsonObject(lCombustivel);
+        lCombustivel.Free;
+      end
+      else
+        raise EDatabaseError.Create('Combustivel não encontrado!');
 
-    Close;
+    finally
+      Close;
+    end;
   end;
 end;
 
@@ -158,7 +160,9 @@ end;
 
 procedure TCombustivelController.DSServerModuleDestroy(Sender: TObject);
 begin
-  tblCombustivel.Connection.Free;
+  if Assigned(tblCombustivel.Connection) then
+    tblCombustivel.Connection.Free;
+
 end;
 
 function TCombustivelController.acceptCombustivel(
@@ -167,17 +171,17 @@ var
   lCombustivel: TCombustivel;
 begin
   lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
-  if lCombustivel.CombustivelOID <> 0 then
-  begin
-    Result := TJSONString.Create('Combustivel já cadastrado. Inclusão cancelada!');
-    Exit;
+  try
+    if lCombustivel.CombustivelOID <> 0 then
+      raise EDatabaseError.Create('Combustivel já cadastrado. Inclusão cancelada!');
+
+    if GravarCombustivel(lCombustivel) then
+      Result := TJSONString.Create('Combustivel gravado com sucesso!');
+
+  except
+    on e:Exception do
+      raise EDatabaseError.Create('Erro ao gravar a combustivel: ' + e.Message);
   end;
-
-  if GravarCombustivel(lCombustivel) then
-    Result := TJSONString.Create('Combustivel gravado com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar a combustivel!')
-
 end;
 
 function TCombustivelController.updateCombustivel(
@@ -187,39 +191,43 @@ var
 begin
   lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
 
-  tblCombustivel.Open;
-  if not PesquisarCombustivel(lCombustivel.CombustivelOID) then
-  begin
-    Result := TJSONString.Create('Combustivel não encontrado!');
-    Exit;
-  end;
-  tblCombustivel.Close;
+  try
+    tblCombustivel.Open;
+    if not PesquisarCombustivel(lCombustivel.CombustivelOID) then
+      raise EDatabaseError.Create('Combustivel não encontrado!');
 
-  if GravarCombustivel(lCombustivel) then
-    Result := TJSONString.Create('Combustivel gravado com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar a combustivel!')
+    tblCombustivel.Close;
+
+    if GravarCombustivel(lCombustivel) then
+      Result := TJSONString.Create('Combustivel gravado com sucesso!')
+  except
+    on e:Exception do
+      raise EDatabaseError.Create('Erro ao gravar a combustivel: ' + e.Message);
+  end;
 
 end;
 
 function TCombustivelController.cancelCombustivel(ID: Integer): TJSONValue;
+var
+  lQry: TFDQuery;
 begin
   tblCombustivel.Open;
   if not PesquisarCombustivel(ID) then
-  begin
-    Result := TJSONString.Create('Combustivel não encontrado!');
-    Exit;
-  end;
+    raise EDatabaseError.Create('Combustivel não encontrado!');
+
   tblCombustivel.Close;
 
-  with tblCombustivel do
-  begin
-    Open;
-    PesquisarCombustivel(ID);
-    Delete;
-    Close;
+  lQry := TFDQuery.Create(nil);
+  try
+    lQry.Connection := DataModule1.ObterConnection;
+    lQry.SQL.Clear;
+    lQry.SQL.Add('delete from Combustivel where COMBUSTIVELOID = :idCombustivel');
+    lQry.ParamByName('idCombustivel').AsInteger := ID;
+    lQry.ExecSQL;
+  finally
+    lQry.Connection.Free;
+    lQry.Free;
   end;
-
 end;
 
 end.

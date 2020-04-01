@@ -73,7 +73,6 @@ begin
 
   tblSeguradora.post;
   tblSeguradora.Close;
-  tblseguradora.Connection.Free;
   Result := true;
 
 end;
@@ -199,22 +198,31 @@ end;
 
 function TSeguradoraController.cancelSeguradora(
   ID: Integer): TJSONValue;
+var
+  lQry: TFDQuery;
 begin
+  try
+    tblSeguradora.Open;
+    if not PesquisarSeguradora(ID) then
+      raise EDatabaseError.Create('Seguradora não encontrada!');
 
-  tblSeguradora.Open;
-  if not PesquisarSeguradora(ID) then
-  begin
-    Result := TJSONString.Create('Seguradora não encontrada!');
-    Exit;
-  end;
-  tblSeguradora.Close;
+    tblSeguradora.Close;
 
-  with tblSeguradora do
-  begin
-    Open;
-    PesquisarSeguradora(ID);
-    Delete;
-    Close;
+    lQry := TFDQuery.Create(nil);
+    try
+      lQry.Connection := DataModule1.ObterConnection;
+      lQry.SQL.Clear;
+      lQry.SQL.Add('delete from Combustivel where COMBUSTIVELOID = :idCombustivel');
+      lQry.ParamByName('idCombustivel').AsInteger := ID;
+      lQry.ExecSQL;
+    finally
+      lQry.Connection.Free;
+      lQry.Free;
+    end;
+  except
+    on e: Exception  do
+      raise Exception.Create('Excecao ocorre em cancelSeguradora: ' + e.Message);
+
   end;
 
 end;
@@ -226,7 +234,8 @@ end;
 
 procedure TSeguradoraController.DSServerModuleDestroy(Sender: TObject);
 begin
-  tblSeguradora.Connection.Free;
+  if Assigned(tblSeguradora.Connection) then
+    tblSeguradora.Connection.Free;
 end;
 
 end.

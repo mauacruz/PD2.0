@@ -105,6 +105,7 @@ begin
   if FServerFunctionInvokerAction <> nil then
     FServerFunctionInvokerAction.Enabled := AllowServerFunctionInvoker;
 
+
 end;
 
 function TWebModule1.AllowServerFunctionInvoker: Boolean;

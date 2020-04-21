@@ -3,31 +3,24 @@ unit Expedicao.Controller.uSeguradora;
 interface
 
 uses
-  System.SysUtils, System.Classes, Datasnap.DSServer,
-  Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  System.JSON, FireDAC.Stan.Intf,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  System.SysUtils,
+
+  System.JSON,
+  FireDAC.Comp.Client,
+
+  Base.uControllerBase,
   Expedicao.Models.uSeguradora;
 
 type
-  TSeguradoraController = class(TDSServerModule)
-    tblSeguradora: TFDQuery;
-    tblSeguradoraSEGURADORAOID: TIntegerField;
-    tblSeguradoraDESCRICAO: TStringField;
-    tblSeguradoraCNPJ: TStringField;
-    tblSeguradoraTELEFONE: TStringField;
-    tblSeguradoraCORRETOR: TStringField;
-    procedure DSServerModuleCreate(Sender: TObject);
-    procedure DSServerModuleDestroy(Sender: TObject);
+  TSeguradoraController = class(TControllerBase)
 
   private
     { Private declarations }
 
-    function GravarSeguradora(pSeguradora: TSeguradora): Boolean;
-    function ObterSeguradoraSelecionada: TSeguradora;
-    function PesquisarSeguradora(pSeguradoraOID: Integer): Boolean;
+    function ObterSeguradoraDaQuery(pQry: TFDQuery): TSeguradora;
+    function ObterSeguradoraPeloOID(pSeguradoraOID: Integer): TSeguradora;
+    function IncluirSeguradora(pSeguradora: TSeguradora): Boolean;
+    function AlterarSeguradora(pSeguradora: TSeguradora): Boolean;
 
   public
     { Public declarations }
@@ -37,12 +30,14 @@ type
     function updateSeguradora(Seguradora: TJSONObject): TJSONValue;
     function acceptSeguradora(Seguradora: TJSONObject): TJSONValue;
     function cancelSeguradora(ID: Integer): TJSONValue;
+
   end;
 
 implementation
 uses
   REST.jSON,
-  uDataModule;
+  uDataModule,
+  Expedicao.Services.uSeguradora;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -51,85 +46,95 @@ uses
 { TSeguradoraController }
 
 
-function TSeguradoraController.GravarSeguradora(
-  pSeguradora: TSeguradora): Boolean;
+function TSeguradoraController.IncluirSeguradora(pSeguradora: TSeguradora): Boolean;
+var
+  lQry: TFDQuery;
 begin
   Result := False;
-  tblSeguradora.Open;
-  if pSeguradora.SeguradoraOID <= 0 then
-    tblSeguradora.Append
-  else
-  begin
-    if not PesquisarSeguradora(pSeguradora.SeguradoraOID) then
-     Exit
-    else
-     tblSeguradora.Edit;
-  end;
+  lQry := DataModule1.ObterQuery;
+  try
 
-  tblSeguradoraDESCRICAO.AsString := pSeguradora.Descricao;
-  tblSeguradoraCNPJ.AsString := pSeguradora.CNPJ;
-  tblSeguradoraTELEFONE.AsString := pSeguradora.Telefone;
-  tblSeguradoraCORRETOR.AsString := pSeguradora.Corretor;
+    with lQry do
+    begin
+      SQL.Add('INSERT INTO Seguradora (');
+      SQL.Add('Descricao, CNPJ, Telefone, Corretor');
+      SQL.Add(') VALUES (');
+      SQL.Add(':Descricao, :CNPJ, :Telefone, :Corretor');
+      SQL.Add(');');
 
-  tblSeguradora.post;
-  tblSeguradora.Close;
-  Result := true;
+      ParamByName('Descricao').AsString := pSeguradora.Descricao;
+      ParamByName('CNPJ').AsString := pSeguradora.CNPJ;
+      ParamByName('Telefone').AsString := pSeguradora.Telefone;
+      ParamByName('Corretor').AsString := pSeguradora.Corretor;
 
-end;
+      ExecSQL;
+      Result := True;
 
-function TSeguradoraController.ObterSeguradoraSelecionada: TSeguradora;
-begin
-  Result := TSeguradora.Create;
-  Result.SeguradoraOID := tblSeguradoraSEGURADORAOID.AsInteger;
-  Result.Descricao  := tblSeguradoraDESCRICAO.AsString;
-  Result.CNPJ := tblSeguradoraCNPJ.AsString;
-  Result.Telefone := tblSeguradoraTELEFONE.AsString;
-  Result.Corretor := tblSeguradoraCORRETOR.AsString;
-end;
+    end;
 
-function TSeguradoraController.PesquisarSeguradora(
-  pSeguradoraOID: Integer): Boolean;
-begin
-  Result := False;
-
-  with tblSeguradora do
-  begin
-    if IsEmpty then
-      Exit;
-
-    Result := (Locate('SEGURADORAOID', pSeguradoraOID, []))
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
 
 end;
+
+function TSeguradoraController.ObterSeguradoraDaQuery(pQry: TFDQuery): TSeguradora;
+var
+  lSvcSeguradora: TSeguradoraService;
+begin
+  lSvcSeguradora := TSeguradoraService.Create;
+  try
+    Result := lSvcSeguradora.ObterSeguradoraDaQuery(pQry);
+  finally
+    lSvcSeguradora.Free;
+  end;
+end;
+
+function TSeguradoraController.ObterSeguradoraPeloOID(
+  pSeguradoraOID: Integer): TSeguradora;
+var
+  lSvcSeguradora: TSeguradoraService;
+begin
+  lSvcSeguradora := TSeguradoraService.Create;
+  try
+    Result := lSvcSeguradora.ObterSeguradoraPeloOID(pSeguradoraOID);
+  finally
+    lSvcSeguradora.Free;
+  end;
+
+end;
+
 
 function TSeguradoraController.Seguradoras: TJSONValue;
 var
   lSeguradora: TSeguradora;
-  lArrResult: TJSONArray;
-  lJSonObj: TJSONObject;
+  lQry: TFDQuery;
 begin
 
-  with tblSeguradora do
-  begin
-    Open;
-
-    if IsEmpty then
+  lQry := DataModule1.ObterQuery;
+  try
+    with lQry do
     begin
-      Result := TJSONString.Create('Seguradora não encontrada!');
-      Close;
-      Exit;
-    end;
+      Open('SELECT * FROM Seguradora');
+      if IsEmpty then
+      begin
+        Result := TJSONString.Create('Nenhuma seguradora encontrada!');
+        ConfigurarResponse(tmNotFound);
+      end;
 
-    lArrResult := TJSONArray.Create;
-    while not Eof do
-    begin
-      lSeguradora := ObterSeguradoraSelecionada;
-      lJSonObj := TJSon.ObjectToJSonObject(lSeguradora);
-      lArrResult.AddElement(lJSonObj);
-      Next;
+      Result := TJSONArray.Create;
+
+      while not Eof do
+      begin
+        lSeguradora := ObterSeguradoraDaQuery(lQry);
+        (Result as TJSONArray).AddElement(TJson.ObjectToJsonObject(lSeguradora));
+        ConfigurarResponse(tmOK);
+        Next;
+      end;
+
     end;
-    Close;
-    Result := lArrResult;
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
 end;
 
@@ -138,104 +143,177 @@ var
   lSeguradora: TSeguradora;
 begin
 
-  with tblSeguradora do
+  lSeguradora := ObterSeguradoraPeloOID(ID);
+
+  if not Assigned(lSeguradora) then
   begin
-    Open;
-
-    if PesquisarSeguradora(ID) then
-    begin
-      lSeguradora := ObterSeguradoraSelecionada;
-      Result := TJson.ObjectToJsonObject(lSeguradora);
-      lSeguradora.Free;
-    end
-    else
-      Result := TJSONString.Create('Seguradora não encontrada!');
-
-    Close;
+    Result := TJSONString.Create('Seguradora não encontrada!');
+    ConfigurarResponse(tmNotFound);
+  end
+  else
+  begin
+    Result := TJson.ObjectToJsonObject(lSeguradora);
+    ConfigurarResponse(tmOK);
+    lSeguradora.Free;
   end;
+
 
 end;
 
 function TSeguradoraController.acceptSeguradora(
   Seguradora: TJSONObject): TJSONValue;
 var
-  lSeguradora: TSeguradora;
+  lSeguradoraEnviada, lSeguradoraCadastrada: TSeguradora;
 begin
-  lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
-  if lSeguradora.SeguradoraOID <> 0 then
-  begin
-    Result := TJSONString.Create('Seguradora já cadastrada. Inclusão cancelada!');
-    Exit;
+  lSeguradoraEnviada := TJson.JsonToObject<TSeguradora>(Seguradora);
+  try
+    lSeguradoraCadastrada := ObterSeguradoraPeloOID(lSeguradoraEnviada.SeguradoraOID);
+    if Assigned(lSeguradoraCadastrada) then
+    begin
+      Result := TJSONString.Create('Seguradora já cadastrada. Inclusão cancelada!');
+      ConfigurarResponse(tmObjectAlreadyExists);
+
+      lSeguradoraCadastrada.Free;
+      Exit;
+    end;
+
+    try
+      if IncluirSeguradora(lSeguradoraEnviada) then
+      begin
+        Result := TJSONString.Create('Seguradora gravada com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar a seguradora!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lSeguradoraEnviada.Free;
   end;
 
-  if GravarSeguradora(lSeguradora) then
-    Result := TJSONString.Create('Seguradora gravada com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar a seguradora!')
 end;
 
 
 function TSeguradoraController.updateSeguradora(
   Seguradora: TJSONObject): TJSONValue;
 var
-  lSeguradora: TSeguradora;
+  lSeguradoraEnviada, lSeguradoraCadastrada: TSeguradora;
 begin
-  lSeguradora := TJson.JsonToObject<TSeguradora>(Seguradora);
+  lSeguradoraEnviada := TJson.JsonToObject<TSeguradora>(Seguradora);
+  try
+    lSeguradoraCadastrada := ObterSeguradoraPeloOID(lSeguradoraEnviada.SeguradoraOID);
+    if not Assigned(lSeguradoraCadastrada) then
+    begin
+      Result := TJSONString.Create('Seguradora não encontrada!');
+      ConfigurarResponse(tmNotFound);
+      Exit;
+    end;
 
-  tblSeguradora.Open;
-  if not PesquisarSeguradora(lSeguradora.SeguradoraOID) then
-  begin
-    Result := TJSONString.Create('Seguradora não encontrada!');
-    Exit;
+    lSeguradoraCadastrada.Free;
+
+    try
+      if AlterarSeguradora(lSeguradoraEnviada) then
+      begin
+        Result := TJSONString.Create('Seguradora gravada com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar a seguradora!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lSeguradoraEnviada.Free;
   end;
-  tblSeguradora.Close;
 
-  if GravarSeguradora(lSeguradora) then
-    Result := TJSONString.Create('Seguradora gravada com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar a seguradora!')
+end;
+
+function TSeguradoraController.AlterarSeguradora(
+  pSeguradora: TSeguradora): Boolean;
+var
+  lQry: TFDQuery;
+begin
+  Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
+
+    with lQry do
+    begin
+      SQL.Add('UPDATE Seguradora SET ');
+      SQL.Add('  Descricao = :Descricao,');
+      SQL.Add('  CNPJ = :CNPJ, ');
+      SQL.Add('  Telefone = :Telefone, ');
+      SQL.Add('  Corretor = :Corretor ');
+      SQL.Add('WHERE SeguradoraOID = :SeguradoraOID');
+
+
+      ParamByName('Descricao').AsString := pSeguradora.Descricao;
+      ParamByName('CNPJ').AsString := pSeguradora.CNPJ;
+      ParamByName('Telefone').AsString := pSeguradora.Telefone;
+      ParamByName('Corretor').AsString := pSeguradora.Corretor;
+      ParamByName('SeguradoraOID').AsInteger := pSeguradora.SeguradoraOID;
+      ExecSQL;
+      Result := True;
+
+    end;
+
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+
 end;
 
 function TSeguradoraController.cancelSeguradora(
   ID: Integer): TJSONValue;
 var
   lQry: TFDQuery;
+  lSeguradora: TSeguradora;
 begin
-  try
-    tblSeguradora.Open;
-    if not PesquisarSeguradora(ID) then
-      raise EDatabaseError.Create('Seguradora não encontrada!');
 
-    tblSeguradora.Close;
-
-    lQry := TFDQuery.Create(nil);
-    try
-      lQry.Connection := DataModule1.ObterConnection;
-      lQry.SQL.Clear;
-      lQry.SQL.Add('delete from Combustivel where COMBUSTIVELOID = :idCombustivel');
-      lQry.ParamByName('idCombustivel').AsInteger := ID;
-      lQry.ExecSQL;
-    finally
-      lQry.Connection.Free;
-      lQry.Free;
-    end;
-  except
-    on e: Exception  do
-      raise Exception.Create('Excecao ocorre em cancelSeguradora: ' + e.Message);
-
+  lSeguradora := ObterSeguradoraPeloOID(ID);
+  if not Assigned(lSeguradora) then
+  begin
+    Result := TJSONString.Create('Seguradora não encontrada!');
+    ConfigurarResponse(tmNotFound);
+    Exit;
   end;
 
-end;
+  lSeguradora.Free;
+  lQry := DataModule1.ObterQuery;
+  try
+    try
+      with lQry do
+      begin
+        SQL.Add('DELETE FROM Seguradora WHERE SeguradoraOID = :SeguradoraOID');
+        ParamByName('SeguradoraOID').AsInteger := ID;
+        ExecSQL;
+        Result := TJSONString.Create('Seguradora excluída com sucesso!');
+        ConfigurarResponse(tmOK);
+      end;
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create('Erro ao excluir a seguradora!');
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
 
-procedure TSeguradoraController.DSServerModuleCreate(Sender: TObject);
-begin
-  tblSeguradora.Connection := datamodule1.ObterConnection;
-end;
 
-procedure TSeguradoraController.DSServerModuleDestroy(Sender: TObject);
-begin
-  if Assigned(tblSeguradora.Connection) then
-    tblSeguradora.Connection.Free;
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+
 end;
 
 end.

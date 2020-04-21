@@ -8,7 +8,8 @@ uses System.SysUtils, System.Classes,
   Datasnap.DSProxyJavaAndroid, Datasnap.DSProxyJavaBlackBerry,
   Datasnap.DSProxyObjectiveCiOS, Datasnap.DSProxyCsharpSilverlight,
   Datasnap.DSProxyFreePascal_iOS,
-  IPPeerServer, IPPeerAPI, Datasnap.DSAuth;
+  IPPeerServer, IPPeerAPI, Datasnap.DSAuth, System.JSON, Data.DBXCommon,
+  Datasnap.DSHTTP;
 
 type
   TServerContainer1 = class(TDataModule)
@@ -44,7 +45,6 @@ function DSServer: TDSServer;
 
 implementation
 
-
 {$R *.dfm}
 
 uses
@@ -78,6 +78,7 @@ begin
   inherited;
   FDSServer := nil;
 end;
+
 
 procedure TServerContainer1.dsscCombustivelGetClass(
   DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);

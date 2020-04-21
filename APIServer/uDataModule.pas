@@ -3,10 +3,21 @@ unit uDataModule;
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
-  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MySQL,
-  FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client;
+  System.SysUtils, System.Classes, Data.DB,
+  FireDAC.DApt,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Error,
+  FireDAC.UI.Intf,
+  FireDAC.Phys.Intf,
+  FireDAC.Stan.Def,
+  FireDAC.Stan.Pool,
+  FireDAC.Stan.Async,
+  FireDAC.Phys,
+  FireDAC.Phys.MySQL,
+  FireDAC.Phys.MySQLDef,
+  FireDAC.VCLUI.Wait,
+  FireDAC.Comp.Client;
 
 type
   TDataModule1 = class(TDataModule)
@@ -14,11 +25,16 @@ type
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
-
+   function ObterConnection: TFDConnection;
   public
     { Public declarations }
-    function ObterConnection: TFDConnection;
+    procedure DestruirQuery(probQuery: TFDQuery);
+
+
+    function ObterQuery: TFDQuery;
+
   end;
+
 
 var
   DataModule1: TDataModule1;
@@ -54,11 +70,29 @@ begin
 
 end;
 
+procedure TDataModule1.DestruirQuery(probQuery: TFDQuery);
+begin
+  //Destroi a conexão instanciada para a query;
+  probQuery.Connection.Free;
+  probQuery.Connection := nil;
+
+  //Destroi a query;
+  FreeAndNil(probQuery);
+end;
+
 function TDataModule1.ObterConnection: TFDConnection;
 begin
   Result := TFDConnection.Create(nil);
   Result.ConnectionDefName := 'PD2.0';
   Result.Connected := True;
+end;
+
+function TDataModule1.ObterQuery: TFDQuery;
+begin
+  Result := TFDQuery.Create(nil);
+  Result.Connection := ObterConnection;
+  Result.SQL.Clear;
+
 end;
 
 end.

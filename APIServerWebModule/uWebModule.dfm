@@ -22,9 +22,10 @@ object WebModule1: TWebModule1
   Height = 333
   Width = 414
   object DSRESTWebDispatcher1: TDSRESTWebDispatcher
+    OnFormatResult = DSRESTWebDispatcher1FormatResult
     WebDispatch.PathInfo = 'datasnap*'
-    Left = 96
-    Top = 75
+    Left = 88
+    Top = 27
   end
   object ServerFunctionInvoker: TPageProducer
     HTMLFile = 'templates/serverfunctioninvoker.html'
@@ -76,8 +77,8 @@ object WebModule1: TWebModule1
       end>
     RootDirectory = '.'
     VirtualPath = '/'
-    Left = 56
-    Top = 136
+    Left = 272
+    Top = 96
   end
   object DSProxyGenerator1: TDSProxyGenerator
     ExcludeClasses = 'DSMetadata'
@@ -92,7 +93,7 @@ object WebModule1: TWebModule1
   end
   object DSProxyDispatcher1: TDSProxyDispatcher
     DSProxyGenerator = DSProxyGenerator1
-    Left = 264
-    Top = 128
+    Left = 256
+    Top = 32
   end
 end

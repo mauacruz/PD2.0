@@ -3,28 +3,21 @@ unit Expedicao.Controller.uCombustivel;
 interface
 
 uses
-  System.SysUtils, System.Classes, Datasnap.DSServer,
-  Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
+  System.SysUtils,
   System.JSON,
-  Expedicao.Models.uCombustivel, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Comp.Client,
+  Base.uControllerBase,
+  Expedicao.Models.uCombustivel;
 
 type
-  TCombustivelController = class(TDSServerModule)
-    tblCombustivel: TFDQuery;
-    tblCombustivelCOMBUSTIVELOID: TIntegerField;
-    tblCombustivelDESCRICAO: TStringField;
-    tblCombustivelVALOR: TBCDField;
-    tblCombustivelUNIDADEMEDIDAOID: TIntegerField;
-    procedure DSServerModuleCreate(Sender: TObject);
-    procedure DSServerModuleDestroy(Sender: TObject);
+  TCombustivelController = class(TControllerBase)
 
   private
-    function GravarCombustivel(pCombustivel: TCombustivel): Boolean;
-    function ObterCombustivelSelecionado: TCombustivel;
-    function PesquisarCombustivel(pCombustivelOID: Integer): Boolean;
+
+    function ObterCombustivelDaQuery(pQry: TFDQuery): TCombustivel;
+    function ObterCombustivelPeloOID(pCombustivelOID: Integer): TCombustivel;
+    function IncluirCombustivel(pCombustivel: TCombustivel): Boolean;
+    function AlterarCombustivel(pCombustivel: TCombustivel): Boolean;
 
     { Private declarations }
 
@@ -41,7 +34,8 @@ type
 implementation
 uses
   REST.jSON,
-  uDataModule;
+  uDataModule,
+  Expedicao.Services.uCombustivel;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -49,160 +43,221 @@ uses
 
 { TCombustivelController }
 
-function TCombustivelController.GravarCombustivel(
+function TCombustivelController.ObterCombustivelDaQuery(
+  pQry: TFDQuery): TCombustivel;
+var
+  lSvcCombustivel: TCombustivelService;
+begin
+  lSvcCombustivel := TCombustivelService.Create;
+  try
+    Result := lSvcCombustivel.ObterCombustivelDaQuery(pQry);
+  finally
+    lSvcCombustivel.Free;
+  end;
+
+end;
+
+function TCombustivelController.ObterCombustivelPeloOID(
+  pCombustivelOID: Integer): TCombustivel;
+var
+  lSvcCombustivel: TCombustivelService;
+begin
+  lSvcCombustivel := TCombustivelService.Create;
+  try
+    Result := lSvcCombustivel.ObterCombustivelPeloOID(pCombustivelOID);
+  finally
+    lSvcCombustivel.Free;
+  end;
+end;
+
+function TCombustivelController.IncluirCombustivel(
   pCombustivel: TCombustivel): Boolean;
+var
+  lQry: TFDQuery;
 begin
   Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
 
-  tblCombustivel.Open;
-  if pCombustivel.CombustivelOID <= 0 then
-    tblCombustivel.Append
-  else
-  begin
-    if not PesquisarCombustivel(pCombustivel.CombustivelOID) then
-       raise EDatabaseError.Create('Combustível não encontrado')
-    else
-     tblCombustivel.Edit;
+    with lQry do
+    begin
+      SQL.Add('INSERT INTO Combustivel (');
+      SQL.Add('Descricao, Valor, UnidadeMedidaOID');
+      SQL.Add(') VALUES (');
+      SQL.Add(':Descricao, :Valor, :UnidadeMedidaOID');
+      SQL.Add(');');
+
+      ParamByName('Descricao').AsString := pCombustivel.Descricao;
+      ParamByName('Valor').AsFloat := pCombustivel.Valor;
+      ParamByName('UnidadeMedidaOID').AsInteger := pCombustivel.UnidadeDeMedidaOID;
+
+      ExecSQL;
+      Result := True;
+    end;
+
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
-
-  tblCombustivelDESCRICAO.AsString := pCombustivel.Descricao;
-  tblCombustivelVALOR.AsFloat := pCombustivel.Valor;
-  tblCombustivelUNIDADEMEDIDAOID.AsInteger := pCombustivel.UnidadeDeMedidaOID;
-
-  tblCombustivel.post;
-  tblCombustivel.Close;
-  Result := true;
-
 end;
 
-function TCombustivelController.ObterCombustivelSelecionado: TCombustivel;
-begin
-  Result := TCombustivel.Create;
-
-  Result.CombustivelOID := tblCombustivelCOMBUSTIVELOID.AsInteger;
-  Result.Descricao  := tblCombustivelDESCRICAO.AsString;
-  Result.Valor := tblCombustivelVALOR.AsFloat;
-  Result.UnidadeDeMedidaOID := tblCombustivelUNIDADEMEDIDAOID.AsInteger;
-end;
-
-function TCombustivelController.PesquisarCombustivel(
-  pCombustivelOID: Integer): Boolean;
+function TCombustivelController.AlterarCombustivel(
+  pCombustivel: TCombustivel): Boolean;
+var
+  lQry: TFDQuery;
 begin
   Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
 
-  with tblCombustivel do
-  begin
-    if IsEmpty then
-      Exit;
+    with lQry do
+    begin
+      SQL.Add('UPDATE Combustivel SET ');
+      SQL.Add('  Descricao = :Descricao,');
+      SQL.Add('  Valor = :Valor, ');
+      SQL.Add('  UnidadeMedidaOID = :UnidadeMedidaOID ');
+      SQL.Add('WHERE CombustivelOID = :CombustivelOID');
 
-    Result := (Locate('COMBUSTIVELOID', pCombustivelOID, []))
+      ParamByName('Descricao').AsString := pCombustivel.Descricao;
+      ParamByName('Valor').AsFloat := pCombustivel.Valor;
+      ParamByName('UnidadeMedidaOID').AsInteger := pCombustivel.UnidadeDeMedidaOID;
+      ParamByName('CombustivelOID').AsInteger := pCombustivel.CombustivelOID;
+      ExecSQL;
+      Result := True;
+
+    end;
+
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
-
 end;
+
 
 function TCombustivelController.Combustiveis: TJSONValue;
 var
   lCombustivel: TCombustivel;
-  lArrResult: TJSONArray;
-  lJSonObj: TJSONObject;
+  lQry: TFDQuery;
 begin
-  with tblCombustivel do
-  begin
-    Open;
-
-    if IsEmpty then
+  lQry := DataModule1.ObterQuery;
+  try
+    with lQry do
     begin
-      Close;
-      raise EDatabaseError.Create('Não existem combustíveis cadastrados!');
-    end;
+      Open('SELECT * FROM Combustivel');
+      if IsEmpty then
+      begin
+        Result := TJSONString.Create('Nenhum combustível encontrado!');
+        ConfigurarResponse(tmNotFound);
+      end;
 
-    lArrResult := TJSONArray.Create;
-    while not Eof do
-    begin
-      lCombustivel := ObterCombustivelSelecionado;
-      lJSonObj := TJSon.ObjectToJSonObject(lCombustivel);
-      lArrResult.AddElement(lJSonObj);
-      Next;
+      Result := TJSONArray.Create;
+
+      while not Eof do
+      begin
+        lCombustivel := ObterCombustivelDaQuery(lQry);
+        (Result as TJSONArray).AddElement(TJson.ObjectToJsonObject(lCombustivel));
+        ConfigurarResponse(tmOK);
+        Next;
+      end;
+
     end;
-    Close;
-    Result := lArrResult;
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
+
 end;
 
 function TCombustivelController.Combustivel(ID: Integer): TJSONValue;
 var
   lCombustivel: TCombustivel;
 begin
-  with tblCombustivel do
+  lCombustivel := ObterCombustivelPeloOID(ID);
+
+  if not Assigned(lCombustivel) then
   begin
-    Open;
-    try
-
-      if PesquisarCombustivel(ID) then
-      begin
-        lCombustivel := ObterCombustivelSelecionado;
-        Result := TJson.ObjectToJsonObject(lCombustivel);
-        lCombustivel.Free;
-      end
-      else
-        raise EDatabaseError.Create('Combustivel não encontrado!');
-
-    finally
-      Close;
-    end;
+    Result := TJSONString.Create('Combustível não encontrado!');
+    ConfigurarResponse(tmNotFound);
+  end
+  else
+  begin
+    Result := TJson.ObjectToJsonObject(lCombustivel);
+    ConfigurarResponse(tmOK);
+    lCombustivel.Free;
   end;
 end;
 
-procedure TCombustivelController.DSServerModuleCreate(Sender: TObject);
-begin
-  tblCombustivel.Connection := datamodule1.ObterConnection;
-end;
-
-procedure TCombustivelController.DSServerModuleDestroy(Sender: TObject);
-begin
-  if Assigned(tblCombustivel.Connection) then
-    tblCombustivel.Connection.Free;
-
-end;
 
 function TCombustivelController.acceptCombustivel(
   Combustivel: TJSONObject): TJSONValue;
 var
-  lCombustivel: TCombustivel;
+  lCombustivelEnviado, lCombustivelCadastrado: TCombustivel;
 begin
-  lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
+  lCombustivelEnviado := TJson.JsonToObject<TCombustivel>(Combustivel);
   try
-    if lCombustivel.CombustivelOID <> 0 then
-      raise EDatabaseError.Create('Combustivel já cadastrado. Inclusão cancelada!');
+    lCombustivelCadastrado := ObterCombustivelPeloOID(lCombustivelEnviado.CombustivelOID);
+    if Assigned(lCombustivelCadastrado) then
+    begin
+      Result := TJSONString.Create('Combustível já cadastrado. Inclusão cancelada!');
+      ConfigurarResponse(tmObjectAlreadyExists);
 
-    if GravarCombustivel(lCombustivel) then
-      Result := TJSONString.Create('Combustivel gravado com sucesso!');
+      lCombustivelCadastrado.Free;
+      Exit;
+    end;
 
-  except
-    on e:Exception do
-      raise EDatabaseError.Create('Erro ao gravar a combustivel: ' + e.Message);
+    try
+      if IncluirCombustivel(lCombustivelEnviado) then
+      begin
+        Result := TJSONString.Create('Combustível gravado com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar o combustível!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lCombustivelEnviado.Free;
   end;
 end;
 
 function TCombustivelController.updateCombustivel(
   Combustivel: TJSONObject): TJSONValue;
 var
-  lCombustivel: TCombustivel;
+  lCombustivelEnviado, lCombustivelCadastrado: TCombustivel;
 begin
-  lCombustivel := TJson.JsonToObject<TCombustivel>(Combustivel);
-
+  lCombustivelEnviado := TJson.JsonToObject<TCombustivel>(Combustivel);
   try
-    tblCombustivel.Open;
-    if not PesquisarCombustivel(lCombustivel.CombustivelOID) then
-      raise EDatabaseError.Create('Combustivel não encontrado!');
+    lCombustivelCadastrado := ObterCombustivelPeloOID(lCombustivelEnviado.CombustivelOID);
+    if not Assigned(lCombustivelCadastrado) then
+    begin
+      Result := TJSONString.Create('Combustível não encontrado!');
+      ConfigurarResponse(tmNotFound);
+      Exit;
+    end;
 
-    tblCombustivel.Close;
+    lCombustivelCadastrado.Free;
 
-    if GravarCombustivel(lCombustivel) then
-      Result := TJSONString.Create('Combustivel gravado com sucesso!')
-  except
-    on e:Exception do
-      raise EDatabaseError.Create('Erro ao gravar a combustivel: ' + e.Message);
+    try
+      if AlterarCombustivel(lCombustivelEnviado) then
+      begin
+        Result := TJSONString.Create('Combustível gravado com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar a combustível!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lCombustivelEnviado.Free;
   end;
 
 end;
@@ -210,23 +265,40 @@ end;
 function TCombustivelController.cancelCombustivel(ID: Integer): TJSONValue;
 var
   lQry: TFDQuery;
+  lCombustivel: TCombustivel;
 begin
-  tblCombustivel.Open;
-  if not PesquisarCombustivel(ID) then
-    raise EDatabaseError.Create('Combustivel não encontrado!');
 
-  tblCombustivel.Close;
+  lCombustivel := ObterCombustivelPeloOID(ID);
+  if not Assigned(lCombustivel) then
+  begin
+    Result := TJSONString.Create('Combustível não encontrado!');
+    ConfigurarResponse(tmNotFound);
+    Exit;
+  end;
 
-  lQry := TFDQuery.Create(nil);
+  lCombustivel.Free;
+  lQry := DataModule1.ObterQuery;
   try
-    lQry.Connection := DataModule1.ObterConnection;
-    lQry.SQL.Clear;
-    lQry.SQL.Add('delete from Combustivel where COMBUSTIVELOID = :idCombustivel');
-    lQry.ParamByName('idCombustivel').AsInteger := ID;
-    lQry.ExecSQL;
+    try
+      with lQry do
+      begin
+        SQL.Add('DELETE FROM Combustivel WHERE CombustivelOID = :CombustivelOID');
+        ParamByName('CombustivelOID').AsInteger := ID;
+        ExecSQL;
+        Result := TJSONString.Create('Combustível excluído com sucesso!');
+        ConfigurarResponse(tmOK);
+      end;
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create('Erro ao excluir o combustível!');
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+
+
   finally
-    lQry.Connection.Free;
-    lQry.Free;
+    DataModule1.DestruirQuery(lQry);
   end;
 end;
 

@@ -1,38 +1,15 @@
 object CombustivelController: TCombustivelController
+  Left = 0
+  Top = 0
+  ClientHeight = 120
+  ClientWidth = 223
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
   OldCreateOrder = False
-  OnCreate = DSServerModuleCreate
-  OnDestroy = DSServerModuleDestroy
-  Height = 159
-  Width = 239
-  object tblCombustivel: TFDQuery
-    SQL.Strings = (
-      'SELECT * FROM combustivel')
-    Left = 80
-    Top = 24
-    object tblCombustivelCOMBUSTIVELOID: TIntegerField
-      AutoGenerateValue = arAutoInc
-      FieldName = 'COMBUSTIVELOID'
-      Origin = 'COMBUSTIVELOID'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Required = True
-    end
-    object tblCombustivelDESCRICAO: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'DESCRICAO'
-      Origin = 'DESCRICAO'
-      Size = 100
-    end
-    object tblCombustivelVALOR: TBCDField
-      AutoGenerateValue = arDefault
-      FieldName = 'VALOR'
-      Origin = 'VALOR'
-      Precision = 10
-      Size = 2
-    end
-    object tblCombustivelUNIDADEMEDIDAOID: TIntegerField
-      AutoGenerateValue = arDefault
-      FieldName = 'UNIDADEMEDIDAOID'
-      Origin = 'UNIDADEMEDIDAOID'
-    end
-  end
+  PixelsPerInch = 96
+  TextHeight = 13
 end

@@ -3,47 +3,23 @@ unit Expedicao.Controller.uRomaneio;
 interface
 
 uses
-  System.SysUtils, System.Classes, Datasnap.DSServer,
-  Datasnap.DSAuth, Datasnap.DSProviderDataModuleAdapter,
-  System.JSON, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
-  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  System.SysUtils,
+  System.JSON,
   FireDAC.Comp.Client,
-
-  Expedicao.Models.uRomaneio,
-  uDataModule
-  ;
+  Base.uControllerBase,
+  Expedicao.Models.uRomaneio;
 
 
 type
-  TRomaneioController = class(TDSServerModule)
-    tblRomaneio: TFDQuery;
-    tblVeiculo: TFDQuery;
-    tblRomaneioROMANEIOOID: TFDAutoIncField;
-    tblRomaneioVEICULOOID: TIntegerField;
-    tblRomaneioCONDUTOROID: TIntegerField;
-    tblRomaneioSAIDA: TDateTimeField;
-    tblRomaneioRETORNO: TDateTimeField;
-    tblRomaneioFUNCIONARIOSAIDAOID: TIntegerField;
-    tblRomaneioFUNCIONARIORETORNOOID: TIntegerField;
-    tblVeiculoVEICULOOID: TFDAutoIncField;
-    tblVeiculoMARCA: TStringField;
-    tblVeiculoMODELO: TStringField;
-    tblVeiculoPLACA: TStringField;
-    tblVeiculoRENAVAM: TStringField;
-    tblVeiculoCOR: TStringField;
-    tblVeiculoANO: TStringField;
-    tblRomaneioKMSAIDA: TBCDField;
-    tblRomaneioKMRETORNO: TBCDField;
-    tblRomaneioKMRODADO: TBCDField;
-    procedure DSServerModuleCreate(Sender: TObject);
-    procedure DSServerModuleDestroy(Sender: TObject);
+  TRomaneioController = class(TControllerBase)
   private
     { Private declarations }
 
-    function GravarRomaneio(pRomaneio: TRomaneio): Boolean;
-    function ObterRomaneioSelecionado: TRomaneio;
-    function PesquisarRomaneio(pRomaneioOID: Integer): Boolean;
+    function ObterRomaneioDaQuery(pQry: TFDQuery): TRomaneio;
+    function ObterRomaneioPeloOID(pRomaneioOID: Integer): TRomaneio;
+    function IncluirRomaneio(pRomaneio: TRomaneio): Boolean;
+    function AlterarRomaneio(pRomaneio: TRomaneio): Boolean;
+    function TestarVeiculoCadastrado(pVeiculoOID: Integer): Boolean;
 
   public
     { Public declarations }
@@ -58,7 +34,7 @@ type
 implementation
 uses
   REST.jSON,
-  System.Generics.Collections;
+  uDataModule;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
@@ -66,189 +42,323 @@ uses
 
 { TRomaneioController }
 
-function TRomaneioController.GravarRomaneio(pRomaneio: TRomaneio): Boolean;
-begin
-  Result := False;
-
-  tblRomaneio.Open;
-  if pRomaneio.RomaneioOID <= 0 then
-    tblRomaneio.Append
-  else
-  begin
-    if not PesquisarRomaneio(pRomaneio.RomaneioOID) then
-     Exit
-    else
-     tblRomaneio.Edit;
-  end;
-
-  tblRomaneioVEICULOOID.AsInteger := pRomaneio.VeiculoOID;
-  tblRomaneioCONDUTOROID.AsInteger := pRomaneio.CondutorOID;
-  tblRomaneioSAIDA.AsDateTime := pRomaneio.Saida;
-  tblRomaneioRETORNO.AsDateTime := pRomaneio.Retorno;
-  tblRomaneioKMSAIDA.AsFloat := pRomaneio.KMSaida;
-  tblRomaneioKMRETORNO.AsFloat := pRomaneio.KMRetorno;
-  tblRomaneioKMRODADO.AsFloat := pRomaneio.KMRodado;
-  tblRomaneioFUNCIONARIOSAIDAOID.AsInteger := pRomaneio.FuncionarioSaidaOID;
-  tblRomaneioFUNCIONARIORETORNOOID.AsInteger := pRomaneio.FuncionarioRetornoOID;
-
-  tblRomaneio.post;
-  tblRomaneio.Close;
-  Result := true;
-
-end;
-
-function TRomaneioController.ObterRomaneioSelecionado: TRomaneio;
+function TRomaneioController.ObterRomaneioDaQuery(pQry: TFDQuery): TRomaneio;
 begin
   Result := TRomaneio.Create;
-  Result.RomaneioOID := tblRomaneioROMANEIOOID.AsInteger;
-  Result.VeiculoOID := tblRomaneioVEICULOOID.AsInteger;
-  Result.CondutorOID := tblRomaneioCONDUTOROID.AsInteger;
-  Result.Saida := tblRomaneioSAIDA.AsDateTime;
-  Result.Retorno := tblRomaneioRETORNO.AsDateTime;
-  Result.KMSaida := tblRomaneioKMSAIDA.AsFloat;
-  Result.KMRetorno := tblRomaneioKMRETORNO.AsFloat;
-  Result.KMRodado := tblRomaneioKMRODADO.AsFloat;
-  Result.FuncionarioSaidaOID := tblRomaneioFUNCIONARIOSAIDAOID.AsInteger;
-  Result.FuncionarioRetornoOID := tblRomaneioFUNCIONARIORETORNOOID.AsInteger;
-end;
 
-function TRomaneioController.PesquisarRomaneio(pRomaneioOID: Integer): Boolean;
-begin
-  Result := False;
-
-  with tblRomaneio do
+  with Result do
   begin
-    if IsEmpty then
-      Exit;
-
-    Result := (Locate('ROMANEIOOID', pRomaneioOID, []))
+    RomaneioOID := pQry.FieldByName('RomaneioOID').AsInteger;
+    VeiculoOID := pQry.FieldByName('VeiculoOID').AsInteger;
+    CondutorOID := pQry.FieldByName('CondutorOID').AsInteger;
+    Saida := pQry.FieldByName('Saida').AsDateTime;
+    Retorno := pQry.FieldByName('Retorno').AsDateTime;
+    KMSaida := pQry.FieldByName('KMSaida').AsFloat;
+    KMRetorno := pQry.FieldByName('KMRetorno').AsFloat;
+    KMRodado := pQry.FieldByName('KMRodado').AsFloat;
+    FuncionarioSaidaOID := pQry.FieldByName('FuncionarioSaidaOID').AsInteger;
+    FuncionarioRetornoOID := pQry.FieldByName('FuncionarioRetornoOID').AsInteger;
   end;
 
 end;
 
+function TRomaneioController.ObterRomaneioPeloOID(
+  pRomaneioOID: Integer): TRomaneio;
+var
+  lQry: TFDQuery;
+begin
+  Result := nil;
+
+  lQry := DataModule1.ObterQuery;
+  try
+    lQry.Open('SELECT * FROM Romaneio WHERE RomaneioOID = :RomaneioOID',
+      [pRomaneioOID]);
+
+    if lQry.IsEmpty then
+      Exit;
+
+    Result := ObterRomaneioDaQuery(lQry);
+
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+end;
+
+function TRomaneioController.IncluirRomaneio(pRomaneio: TRomaneio): Boolean;
+var
+  lQry: TFDQuery;
+begin
+  Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
+
+    with lQry do
+    begin
+      SQL.Add('INSERT INTO Romaneio (');
+      SQL.Add('VeiculoOID, CondutorOID, Saida, Retorno, KMSaida, KMRetorno, KMRodado, FuncionarioSaidaOID, FuncionarioRetornoOID');
+      SQL.Add(') VALUES (');
+      SQL.Add(':VeiculoOID, :CondutorOID, :Saida, :Retorno, :KMSaida, :KMRetorno, :KMRodado, :FuncionarioSaidaOID, :FuncionarioRetornoOID');
+      SQL.Add(');');
+
+      ParamByName('VeiculoOID').AsInteger := pRomaneio.VeiculoOID;
+      ParamByName('CondutorOID').AsInteger := pRomaneio.CondutorOID;
+      ParamByName('Saida').AsDateTime := pRomaneio.Saida;
+      ParamByName('Retorno').AsDateTime := pRomaneio.Retorno;
+      ParamByName('KMSaida').AsFloat := pRomaneio.KMSaida;
+      ParamByName('KMRetorno').AsFloat := pRomaneio.KMRetorno;
+      ParamByName('KMRodado').AsFloat := pRomaneio.KMRodado;
+      ParamByName('FuncionarioSaidaOID').AsInteger := pRomaneio.FuncionarioSaidaOID;
+      ParamByName('FuncionarioRetornoOID').AsInteger := pRomaneio.FuncionarioRetornoOID;
+
+      ExecSQL;
+      Result := True;
+    end;
+
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+end;
+
+function TRomaneioController.AlterarRomaneio(pRomaneio: TRomaneio): Boolean;
+var
+  lQry: TFDQuery;
+begin
+  Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
+
+    with lQry do
+    begin
+      SQL.Add('UPDATE Romaneio SET ');
+      SQL.Add('  VeiculoOID = :VeiculoOID,');
+      SQL.Add('  CondutorOID = :CondutorOID, ');
+      SQL.Add('  Saida = :Saida, ');
+      SQL.Add('  Retorno = :Retorno, ');
+      SQL.Add('  KMSaida = :KMSaida, ');
+      SQL.Add('  KMRetorno = :KMRetorno, ');
+      SQL.Add('  KMRodado = :KMRodado, ');
+      SQL.Add('  FuncionarioSaidaOID = :FuncionarioSaidaOID, ');
+      SQL.Add('  FuncionarioRetornoOID = :FuncionarioRetornoOID ');
+      SQL.Add('WHERE RomaneioOID = :RomaneioOID');
+
+      ParamByName('RomaneioOID').AsInteger := pRomaneio.RomaneioOID;
+      ParamByName('VeiculoOID').AsInteger := pRomaneio.VeiculoOID;
+      ParamByName('CondutorOID').AsInteger := pRomaneio.CondutorOID;
+      ParamByName('Saida').AsDateTime := pRomaneio.Saida;
+      ParamByName('Retorno').AsDateTime := pRomaneio.Retorno;
+      ParamByName('KMSaida').AsFloat := pRomaneio.KMSaida;
+      ParamByName('KMRetorno').AsFloat := pRomaneio.KMRetorno;
+      ParamByName('KMRodado').AsFloat := pRomaneio.KMRodado;
+      ParamByName('FuncionarioSaidaOID').AsInteger := pRomaneio.FuncionarioSaidaOID;
+      ParamByName('FuncionarioRetornoOID').AsInteger := pRomaneio.FuncionarioRetornoOID;
+
+      ExecSQL;
+      Result := True;
+
+    end;
+
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+end;
 
 function TRomaneioController.Romaneios: TJSONValue;
 var
   lRomaneio: TRomaneio;
-  lArrResult: TJSONArray;
-  lJSonObj: TJSONObject;
+  lQry: TFDQuery;
 begin
-
-  with tblRomaneio do
-  begin
-    Open;
-
-    if IsEmpty then
+  lQry := DataModule1.ObterQuery;
+  try
+    with lQry do
     begin
-      Result := TJSONString.Create('Romaneio não encontrado!');
-      Close;
-      Exit;
-    end;
+      Open('SELECT * FROM Romaneio');
+      if IsEmpty then
+      begin
+        Result := TJSONString.Create('Nenhum romaneio encontrado!');
+        ConfigurarResponse(tmNotFound);
+      end;
 
-    lArrResult := TJSONArray.Create;
-    while not Eof do
-    begin
-      lRomaneio := ObterRomaneioSelecionado;
-      lJSonObj := TJSon.ObjectToJSonObject(lRomaneio);
-      lArrResult.AddElement(lJSonObj);
-      Next;
+      Result := TJSONArray.Create;
+
+      while not Eof do
+      begin
+        lRomaneio := ObterRomaneioDaQuery(lQry);
+        (Result as TJSONArray).AddElement(TJson.ObjectToJsonObject(lRomaneio));
+        ConfigurarResponse(tmOK);
+        Next;
+      end;
+
     end;
-    Close;
-    Result := lArrResult;
+  finally
+    DataModule1.DestruirQuery(lQry);
+  end;
+end;
+
+function TRomaneioController.TestarVeiculoCadastrado(
+  pVeiculoOID: Integer): Boolean;
+var
+  lQry: TFDQuery;
+begin
+  Result := False;
+  lQry := DataModule1.ObterQuery;
+  try
+
+    with lQry do
+    begin
+      Open('SELECT COUNT(*) AS Total FROM Veiculo WHERE VeiculoOID = :VeiculoOID', [pVeiculoOID]);
+
+      Result := FieldByName('Total').AsInteger > 0;
+    end;
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
 
 end;
-
 
 function TRomaneioController.Romaneio(ID: Integer): TJSONValue;
 var
   lRomaneio: TRomaneio;
 begin
+  lRomaneio := ObterRomaneioPeloOID(ID);
 
-  with tblRomaneio do
+  if not Assigned(lRomaneio) then
   begin
-    Open;
-
-    if PesquisarRomaneio(ID) then
-    begin
-      lRomaneio := ObterRomaneioSelecionado;
-      Result := TJson.ObjectToJsonObject(lRomaneio);
-      lRomaneio.Free;
-    end
-    else
-      Result := TJSONString.Create('Romaneio não encontrado!');
-
-    Close;
+    Result := TJSONString.Create('Romaneio não encontrado!');
+    ConfigurarResponse(tmNotFound);
+  end
+  else
+  begin
+    Result := TJson.ObjectToJsonObject(lRomaneio);
+    ConfigurarResponse(tmOK);
+    lRomaneio.Free;
   end;
 end;
 
 function TRomaneioController.acceptRomaneio(Romaneio: TJSONObject): TJSONValue;
 var
-  lRomaneio: TRomaneio;
+  lRomaneioEnviado, lRomaneioCadastrado: TRomaneio;
 begin
-  lRomaneio := TJson.JsonToObject<TRomaneio>(Romaneio);
-  if lRomaneio.RomaneioOID <> 0 then
-  begin
-    Result := TJSONString.Create('Romaneio já cadastrado. Inclusão cancelada!');
-    Exit;
+  lRomaneioEnviado := TJson.JsonToObject<TRomaneio>(Romaneio);
+  try
+    lRomaneioCadastrado := ObterRomaneioPeloOID(lRomaneioEnviado.RomaneioOID);
+    if Assigned(lRomaneioCadastrado) then
+    begin
+      Result := TJSONString.Create('Romaneio já cadastrado. Inclusão cancelada!');
+      ConfigurarResponse(tmObjectAlreadyExists);
+
+      lRomaneioCadastrado.Free;
+      Exit;
+    end;
+
+    try
+      if not TestarVeiculoCadastrado(lRomaneioEnviado.VeiculoOID) then
+      begin
+        Result := TJSONString.Create('Veículo informado não existe!');
+        ConfigurarResponse(tmUnprocessableEntity);
+        Exit;
+      end;
+
+      if IncluirRomaneio(lRomaneioEnviado) then
+      begin
+        Result := TJSONString.Create('Romaneio gravado com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar o Romaneio!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lRomaneioEnviado.Free;
   end;
-
-
-
-  if GravarRomaneio(lRomaneio) then
-    Result := TJSONString.Create('Romaneio gravado com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar o romaneio!')
 end;
 
 function TRomaneioController.updateRomaneio(Romaneio: TJSONObject): TJSONValue;
 var
-  lRomaneio: TRomaneio;
+  lRomaneioEnviado, lRomaneioCadastrado: TRomaneio;
 begin
-  lRomaneio := TJson.JsonToObject<TRomaneio>(Romaneio);
+  lRomaneioEnviado := TJson.JsonToObject<TRomaneio>(Romaneio);
+  try
+    lRomaneioCadastrado := ObterRomaneioPeloOID(lRomaneioEnviado.RomaneioOID);
+    if not Assigned(lRomaneioCadastrado) then
+    begin
+      Result := TJSONString.Create('Romaneio não encontrado!');
+      ConfigurarResponse(tmNotFound);
+      Exit;
+    end;
 
-  tblRomaneio.Open;
-  if not PesquisarRomaneio(lRomaneio.RomaneioOID) then
-  begin
-    Result := TJSONString.Create('Romaneio não encontrado!');
-    Exit;
+    lRomaneioCadastrado.Free;
+
+    try
+      if not TestarVeiculoCadastrado(lRomaneioEnviado.VeiculoOID) then
+      begin
+        Result := TJSONString.Create('Veículo informado não existe!');
+        ConfigurarResponse(tmUnprocessableEntity);
+        Exit;
+      end;
+
+      if AlterarRomaneio(lRomaneioEnviado) then
+      begin
+        Result := TJSONString.Create('Romaneio gravado com sucesso!');
+        ConfigurarResponse(tmOK);
+      end
+      else
+        raise Exception.Create('Erro ao gravar o romaneio!');
+
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create(e.Message);
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    lRomaneioEnviado.Free;
   end;
-  tblRomaneio.Close;
+end;
 
-  if GravarRomaneio(lRomaneio) then
-    Result := TJSONString.Create('Romaneio gravado com sucesso!')
-  else
-    Result := TJSONString.Create('Erro ao gravar o romaneio!')end;
 
 function TRomaneioController.cancelRomaneio(ID: Integer): TJSONValue;
+var
+  lQry: TFDQuery;
+  lRomaneio: TRomaneio;
 begin
-  tblRomaneio.Open;
-  if not PesquisarRomaneio(ID) then
+
+  lRomaneio := ObterRomaneioPeloOID(ID);
+  if not Assigned(lRomaneio) then
   begin
     Result := TJSONString.Create('Romaneio não encontrado!');
+    ConfigurarResponse(tmNotFound);
     Exit;
   end;
-  tblRomaneio.Close;
 
-  with tblRomaneio do
-  begin
-    Open;
-    PesquisarRomaneio(ID);
-    Delete;
-    Close;
+  lRomaneio.Free;
+  lQry := DataModule1.ObterQuery;
+  try
+    try
+      with lQry do
+      begin
+        SQL.Add('DELETE FROM Romaneio WHERE RomaneioOID = :RomaneioOID');
+        ParamByName('RomaneioOID').AsInteger := ID;
+        ExecSQL;
+        Result := TJSONString.Create('Romaneio excluído com sucesso!');
+        ConfigurarResponse(tmOK);
+      end;
+    except
+      on e: Exception do
+      begin
+        Result := TJSONString.Create('Erro ao excluir o Romaneio!');
+        ConfigurarResponse(tmUndefinedError);
+      end;
+    end;
+  finally
+    DataModule1.DestruirQuery(lQry);
   end;
-end;
-
-procedure TRomaneioController.DSServerModuleCreate(Sender: TObject);
-begin
-  tblRomaneio.Connection := datamodule1.ObterConnection;
-  tblVeiculo.Connection := datamodule1.ObterConnection;
-end;
-
-procedure TRomaneioController.DSServerModuleDestroy(Sender: TObject);
-begin
-  tblRomaneio.Connection.Free;
-  tblVeiculo.Connection.Free;
 end;
 
 end.

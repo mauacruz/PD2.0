@@ -1,6 +1,9 @@
 unit Expedicao.Models.uCombustivel;
 
 interface
+uses
+  System.JSON;
+
 type
   TCombustivel = class
     private
@@ -14,6 +17,7 @@ type
       procedure SetValor(const Value: Currency);
       procedure SetUnidadeDeMedidaOID(const Value: Integer);
     public
+      constructor Create(pCombustivelJSON: TJSONObject); overload;
 
       property CombustivelOID: Integer read FCombustivelOID write SetCombustivelOID;
       property Descricao: string read FDescricao write SetDescricao;
@@ -22,8 +26,20 @@ type
   end;
 
 implementation
+uses
+  System.SysUtils,
+  Rest.Json;
 
 { TCombustivel }
+
+constructor TCombustivel.Create(pCombustivelJSON: TJSONObject);
+begin
+  inherited Create;
+  Self.CombustivelOID := TJSONNumber(pCombustivelJSON.GetValue('CombustivelOID')).AsInt;
+  Self.Descricao := TJSONString(pCombustivelJSON.GetValue('Descricao')).Value;
+  Self.Valor := TJSONNumber(pCombustivelJSON.GetValue('Valor')).AsDouble;
+  Self.UnidadeDeMedidaOID := TJSONNumber(pCombustivelJSON.GetValue('UnidadeDeMediddaOID')).AsInt;
+end;
 
 procedure TCombustivel.SetCombustivelOID(const Value: Integer);
 begin

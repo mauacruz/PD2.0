@@ -13,7 +13,7 @@ uses
   Datasnap.DSProxyFreePascal_iOS,
   Datasnap.DSProxyJavaScript, IPPeerServer, Datasnap.DSMetadata,
   Datasnap.DSServerMetadata, Datasnap.DSClientMetadata, Datasnap.DSCommonServer,
-  Datasnap.DSHTTP;
+  Datasnap.DSHTTP, System.JSON, Data.DBXCommon;
 
 type
   TWebModule1 = class(TWebModule)
@@ -34,6 +34,9 @@ type
       const AFileName: string; Request: TWebRequest; Response: TWebResponse;
       var Handled: Boolean);
     procedure WebModuleCreate(Sender: TObject);
+    procedure DSRESTWebDispatcher1FormatResult(Sender: TObject;
+      var ResultVal: TJSONValue; const Command: TDBXCommand;
+      var Handled: Boolean);
   private
     { Private declarations }
     FServerFunctionInvokerAction: TWebActionItem;
@@ -51,6 +54,22 @@ implementation
 {$R *.dfm}
 
 uses uServerMethods, uServerContainer, Web.WebReq;
+
+
+procedure TWebModule1.DSRESTWebDispatcher1FormatResult(Sender: TObject;
+  var ResultVal: TJSONValue; const Command: TDBXCommand; var Handled: Boolean);
+var
+  JSONValue: TJSONValue;
+begin
+//  if Command.Text = 'TServerMethodsServer.GetVendas' then
+//    begin
+      Handled := True;
+      JSONValue := ResultVal;
+      ResultVal := TJSONArray(JSONValue).Get(0);
+      TJSONArray(JSONValue).Remove(0);
+      JSONValue.Free;
+//    end;
+end;
 
 procedure TWebModule1.ServerFunctionInvokerHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
@@ -92,7 +111,12 @@ end;
 
 procedure TWebModule1.WebModuleBeforeDispatch(Sender: TObject;
   Request: TWebRequest; Response: TWebResponse; var Handled: Boolean);
+var
+  lSep: TStringList;
+  I: Integer;
+  lStatusCode, lMessage: string;
 begin
+
   Response.SetCustomHeader('Access-Control-Allow-Origin','*');
 
   if Trim(Request.GetFieldByName('Access-Control-Request-Headers')) <> '' then
@@ -105,7 +129,52 @@ begin
   if FServerFunctionInvokerAction <> nil then
     FServerFunctionInvokerAction.Enabled := AllowServerFunctionInvoker;
 
+(*
+  lSep := TStringList.Create;
+  try
+    lSep.Delimiter := ';';
+    lSep.StrictDelimiter := true;
+    lSep.DelimitedText := GetInvocationMetadata.ResponseContent;
 
+
+    if lSep.Count = 2 then
+    begin
+      Response.StatusCode := StrToInt(lSep[0]);
+      Response.Content := lSep[1];
+    end;
+
+  finally
+    lSep.Free;
+  end;
+*)
+
+
+
+(*
+
+var
+  lstTeares: String;
+  lSep: TStringList;
+  i: integer;
+begin
+  if not FLinhaTear.ContainsKey(prstLinha) then
+    Exit(nil);
+
+  lstTeares := FLinhaTear[prstLinha];
+
+  lSep := TStringList.Create;
+
+  lSep.Delimiter := ';';
+  lSep.StrictDelimiter := true;
+  lSep.DelimitedText := lstTeares;
+
+  Result := TList<String>.Create;
+
+  for i := 0 to Pred(lSep.Count) do
+    Result.Add(lSep[i]);
+
+  lSep.Free;
+*)
 end;
 
 function TWebModule1.AllowServerFunctionInvoker: Boolean;

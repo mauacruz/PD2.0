@@ -23,7 +23,11 @@ uses
   Expedicao.Models.uRomaneio in '..\APIServer\Model\Expedicao.Models.uRomaneio.pas',
   Expedicao.Models.uInfracao in '..\APIServer\Model\Expedicao.Models.uInfracao.pas',
   Expedicao.Models.uCombustivel in '..\APIServer\Model\Expedicao.Models.uCombustivel.pas',
-  uDataModule in '..\APIServer\uDataModule.pas' {DataModule1: TDataModule};
+  uDataModule in '..\APIServer\uDataModule.pas' {DataModule1: TDataModule},
+  Base.uControllerBase in '..\APIServer\Base\Base.uControllerBase.pas',
+  Expedicao.Services.uSeguradora in '..\APIServer\Services\Expedicao.Services.uSeguradora.pas',
+  Expedicao.Services.uCombustivel in '..\APIServer\Services\Expedicao.Services.uCombustivel.pas',
+  Expedicao.Services.uSeguro in '..\APIServer\Services\Expedicao.Services.uSeguro.pas';
 
 {$R *.res}
 

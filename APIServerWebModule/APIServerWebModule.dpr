@@ -11,7 +11,6 @@ uses
   uServerMethods in 'uServerMethods.pas' {ServerMethods1: TDSServerModule},
   uServerContainer in 'uServerContainer.pas' {ServerContainer1: TDataModule},
   uWebModule in 'uWebModule.pas' {WebModule1: TWebModule},
-  Expedicao.Controller.uCombustivel in '..\APIServer\Controller\Expedicao.Controller.uCombustivel.pas' {CombustivelController: TDSServerModule},
   Expedicao.Controller.uInfracao in '..\APIServer\Controller\Expedicao.Controller.uInfracao.pas' {InfracaoController: TDSServerModule},
   Expedicao.Controller.uRomaneio in '..\APIServer\Controller\Expedicao.Controller.uRomaneio.pas' {RomaneioController: TDSServerModule},
   Expedicao.Controller.uSeguradora in '..\APIServer\Controller\Expedicao.Controller.uSeguradora.pas' {SeguradoraController: TDSServerModule},
@@ -27,7 +26,8 @@ uses
   Base.uControllerBase in '..\APIServer\Base\Base.uControllerBase.pas',
   Expedicao.Services.uSeguradora in '..\APIServer\Services\Expedicao.Services.uSeguradora.pas',
   Expedicao.Services.uCombustivel in '..\APIServer\Services\Expedicao.Services.uCombustivel.pas',
-  Expedicao.Services.uSeguro in '..\APIServer\Services\Expedicao.Services.uSeguro.pas';
+  Expedicao.Services.uSeguro in '..\APIServer\Services\Expedicao.Services.uSeguro.pas',
+  Expedicao.Controller.uCombustivel in '..\APIServer\Controller\Expedicao.Controller.uCombustivel.pas' {CombustivelController: TDSServerModule};
 
 {$R *.res}
 

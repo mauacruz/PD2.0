@@ -9,26 +9,25 @@ uses
   Base.uControllerBase,
   Expedicao.Models.uCombustivel;
 
+
 type
   TCombustivelController = class(TControllerBase)
-
   private
-
+    { Private declarations }
     function ObterCombustivelDaQuery(pQry: TFDQuery): TCombustivel;
     function ObterCombustivelPeloOID(pCombustivelOID: Integer): TCombustivel;
     function IncluirCombustivel(pCombustivel: TCombustivel): Boolean;
     function AlterarCombustivel(pCombustivel: TCombustivel): Boolean;
 
-    { Private declarations }
 
   public
     { Public declarations }
-
     function Combustiveis: TJSONValue;
     function Combustivel(ID: Integer): TJSONValue;
     function updateCombustivel(Combustivel: TJSONObject): TJSONValue;
     function acceptCombustivel(Combustivel: TJSONObject): TJSONValue;
     function cancelCombustivel(ID: Integer): TJSONValue;
+
   end;
 
 implementation
@@ -42,7 +41,6 @@ uses
 {$R *.dfm}
 
 { TCombustivelController }
-
 function TCombustivelController.ObterCombustivelDaQuery(
   pQry: TFDQuery): TCombustivel;
 var
@@ -303,4 +301,5 @@ begin
 end;
 
 end.
+
 
